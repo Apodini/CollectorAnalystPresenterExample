@@ -18,7 +18,7 @@ struct CreateUserLocationHandler: Handler {
         let span = tracer.span(name: "location", from: connection)
         
         Metric
-            .counter(label: "location-\(userID)", dimensions: ["path": "/user/{id}/location"])
+            .counter(label: "location-\(userID)", dimensions: ["path": "/user/{id}/locations"])
             .increment()
         
         return databaseService.add(location, userID: userID)

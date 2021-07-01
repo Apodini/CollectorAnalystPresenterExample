@@ -12,8 +12,8 @@ struct GatewayWebService: WebService {
     @Option var port: Int = 80
     @Option var jaegerURL: URL = URL(string: "http://jaeger:14250/")!
     @Option var prometheusURL: URL = URL(string: "http://gatewayprometheus:9090/")!
-    @Option var processingServiceURL: URL = URL(string: "http://processing:80/")!
-    @Option var databaseServiceURL: URL = URL(string: "http://database:80/")!
+    @Option var processingServiceURL: URL = URL(string: "http://localhost:82/")!
+    @Option var databaseServiceURL: URL = URL(string: "http://localhost:81/")!
     
     @PathParameter var userId: Int
     
@@ -52,8 +52,9 @@ struct GatewayWebService: WebService {
         Group("user", $userId, "hotspots") {
             ReadHotspotsHandler(userID: $userId)
         }
-        Group("user", $userId, "location") {
+        Group("user", $userId, "locations") {
             CreateUserLocationHandler(userID: $userId)
+                .operation(.create)
         }
         Group("metrics-ui") {
             MetricsUIHandler()

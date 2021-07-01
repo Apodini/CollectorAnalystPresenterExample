@@ -1,6 +1,7 @@
 import Apodini
 import Collector
 import AsyncHTTPClient
+import NIOHTTP1
 
 
 protocol ConnectionService {
@@ -10,6 +11,17 @@ protocol ConnectionService {
 
 
 class RemoteConnectionService: ConnectionService {
+    struct ResponseWrapper<D: Decodable>: Decodable {
+        enum CodingKeys: String, CodingKey {
+            case data
+            case links = "_links"
+        }
+        
+        let data: D
+        let links: [String: String]
+    }
+    
+    
     static let sendInterval = 10.0
     
     
@@ -28,42 +40,29 @@ class RemoteConnectionService: ConnectionService {
     
     
     func add(_ coordinate: Coordinate, userID: Int) throws -> EventLoopFuture<Coordinate> {
-        let data = try JSONEncoder().encode(coordinate)
-        var request = try HTTPClient.Request(
-            url: databaseURL.appendingPathComponent("/v1/user/\(userID)/location"),
-            method: .POST,
-            headers: ["Content-Type": "application/json"],
-            body: .data(data)
-        )
-        let span = tracer.span(name: "/v1/user/{id}/location")
-        span.propagate(in: &request)
-
-        return client
-            .execute(request: request)
-            .flatMapThrowing { response in
-                span.set(Int(response.status.code), forKey: "status-code")
-                guard (200..<300).contains(response.status.code) else {
-                    throw ApodiniError(type: .notFound, reason: "\(response.status)")
-                }
-                guard let body = response.body else {
-                    throw ApodiniError(type: .notFound, reason: "Response was empty")
-                }
-                span.set(Data(buffer: body), forKey: "body")
-                return try JSONDecoder().decode(Coordinate.self, from: body)
-            }
-            .always { _ in
-                span.finish()
-            }
+        try makeNetworkCall(to: databaseURL.appendingPathComponent("v1/user/\(userID)/locations"), method: .POST, requestContent: coordinate)
     }
     
     func hotspots(userID: Int) throws -> EventLoopFuture<[Coordinate]> {
+        try makeNetworkCall(to: processingURL.appendingPathComponent("v1/user/\(userID)/hotspots"), requestContentType: Empty.self)
+    }
+    
+    private func makeNetworkCall<E: Encodable, D: Decodable>(to url: URL, method: HTTPMethod = .GET, requestContent: E? = nil, requestContentType: E.Type = E.self) throws -> EventLoopFuture<D> {
+        let body: HTTPClient.Body?
+        if let requestContent = requestContent, method != .GET, let data = try? JSONEncoder().encode(requestContent) {
+            body = .data(data)
+        } else {
+            body = nil
+        }
+        
         var request = try HTTPClient.Request(
-            url: processingURL.appendingPathComponent("/v1/user/\(userID)/hotspots"),
-            method: .GET,
-            headers: ["Content-Type": "application/json"]
+            url: url,
+            method: method,
+            headers: body != nil ? ["Content-Type": "application/json"] : [:],
+            body: body
         )
-
-        let span = tracer.span(name: "/v1/user/{id}/hotspots")
+        
+        let span = tracer.span(name: url.pathComponents.joined(separator: "/"))
         span.propagate(in: &request)
 
         return client
@@ -77,7 +76,7 @@ class RemoteConnectionService: ConnectionService {
                     throw ApodiniError(type: .notFound, reason: "Response was empty")
                 }
                 span.set(Data(buffer: body), forKey: "body")
-                return try JSONDecoder().decode([Coordinate].self, from: body)
+                return try JSONDecoder().decode(ResponseWrapper<D>.self, from: body).data
             }
             .always { _ in
                 span.finish()

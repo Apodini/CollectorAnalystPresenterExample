@@ -14,7 +14,7 @@ struct ReadHotspotsHandler: Handler {
     var notFound: ApodiniError
     
     
-    func handle() -> EventLoopFuture<[Coordinate]> {
+    func handle() throws -> EventLoopFuture<[Coordinate]> {
         let span = tracer.span(name: "hotspots-\(userID)", from: connection)
         let querySpan = span.child(name: "database-access")
 
@@ -22,7 +22,8 @@ struct ReadHotspotsHandler: Handler {
             .counter(label: "usage", dimensions: ["path": "user/{id}/hotspots"])
             .increment()
 
-        return databaseService.query(userID: userID, span: querySpan)
+        return try databaseService
+            .query(userID: userID, span: querySpan)
             .always { _ in
                 querySpan.finish()
             }

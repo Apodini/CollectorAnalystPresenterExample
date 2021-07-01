@@ -10,7 +10,7 @@ import Foundation
 
 @main
 struct DatabaseWebService: WebService {
-    @Option var port: Int = 80
+    @Option var port: Int = 81
     @Option var jaegerURL: URL = URL(string: "http://jaeger:14250/")!
     @Option var prometheusURL: URL = URL(string: "http://databaseprometheus:9090/")!
     
@@ -46,7 +46,7 @@ struct DatabaseWebService: WebService {
 
     
     var content: some Component {
-        Group("user", $userId, "location") {
+        Group("user", $userId, "locations") {
             ReadUserLocationHandler(userID: $userId)
                 .operation(.read)
             CreateUserLocationHandler(userID: $userId)

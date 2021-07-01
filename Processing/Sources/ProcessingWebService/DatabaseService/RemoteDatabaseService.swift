@@ -4,11 +4,22 @@ import ApodiniAsyncHTTPClient
 import Foundation
 
 protocol DatabaseService {
-    func query(userID: Int, span: Span) -> EventLoopFuture<[Coordinate]>
+    func query(userID: Int, span: Span) throws -> EventLoopFuture<[Coordinate]>
 }
 
 
 class RemoteDatabaseService: DatabaseService {
+    struct ResponseWrapper<D: Decodable>: Decodable {
+        enum CodingKeys: String, CodingKey {
+            case data
+            case links = "_links"
+        }
+        
+        let data: D
+        let links: [String: String]
+    }
+    
+    
     let databaseServiceURL: URL
     let decoder = JSONDecoder()
     let client: HTTPClient
@@ -20,34 +31,30 @@ class RemoteDatabaseService: DatabaseService {
     }
     
     
-    func query(userID: Int, span: Span) -> EventLoopFuture<[Coordinate]> {
-        do {
-            var request = try HTTPClient.Request(url: databaseServiceURL.appendingPathComponent("user/\(userID)/location"))
-            span.propagate(in: &request)
-            
-            return client
-                .execute(request: request)
-                .flatMapThrowing { response in
-                    span.set(Int(response.status.code), forKey: "status-code")
-                    guard (200..<300).contains(response.status.code) else {
-                        throw ApodiniError(
-                            type: .serverError,
-                            reason: "Recieved a response from the database service with status code \(response.status.code)"
-                        )
-                    }
-                    guard let body = response.body else {
-                        throw ApodiniError(
-                            type: .serverError,
-                            reason: "Recieved a response with an empty body from the database service"
-                        )
-                    }
-                    span.set(Data(buffer: body), forKey: "body")
-                    
-                    return try self.decoder.decode([Coordinate].self, from: body)
+    func query(userID: Int, span: Span) throws -> EventLoopFuture<[Coordinate]> {
+        var request = try HTTPClient.Request(url: databaseServiceURL.appendingPathComponent("v1/user/\(userID)/locations"))
+        span.propagate(in: &request)
+        
+        return client
+            .execute(request: request)
+            .flatMapThrowing { response in
+                span.set(Int(response.status.code), forKey: "status-code")
+                guard (200..<300).contains(response.status.code) else {
+                    throw ApodiniError(
+                        type: .serverError,
+                        reason: "Recieved a response from the database service with status code \(response.status.code)"
+                    )
                 }
-        } catch {
-            return client.eventLoopGroup.next().makeFailedFuture(error)
-        }
+                guard let body = response.body else {
+                    throw ApodiniError(
+                        type: .serverError,
+                        reason: "Recieved a response with an empty body from the database service"
+                    )
+                }
+                span.set(Data(buffer: body), forKey: "body")
+                
+                return try self.decoder.decode(ResponseWrapper<[Coordinate]>.self, from: body).data
+            }
     }
 }
 

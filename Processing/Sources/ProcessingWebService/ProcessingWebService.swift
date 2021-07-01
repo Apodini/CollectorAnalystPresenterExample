@@ -8,10 +8,10 @@ import Foundation
 
 @main
 struct ProcessingWebService: WebService {
-    @Option var port: Int = 80
+    @Option var port: Int = 82
     @Option var jaegerURL: URL = URL(string: "http://jaeger:14250/")!
     @Option var prometheusURL: URL = URL(string: "http://processingprometheus:9090/")!
-    @Option var databaseServiceURL: URL = URL(string: "http://database:80/")!
+    @Option var databaseServiceURL: URL = URL(string: "http://localhost:81/")!
     
     @PathParameter var userId: Int
     

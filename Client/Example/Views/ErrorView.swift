@@ -7,13 +7,15 @@ struct ErrorView: View {
     
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 32) {
-                Text(error)
-                Button("Try again", action: action)
-            }
+        VStack(spacing: 32) {
+            Text(error)
+            Button("Enter different hostname", action: action)
+                .buttonStyle(.bordered)
+                .tint(.primary)
+                .controlSize(.large)
+                .controlProminence(.increased)
+        }
             .padding(32)
             .navigationTitle("Error")
-        }
     }
 }

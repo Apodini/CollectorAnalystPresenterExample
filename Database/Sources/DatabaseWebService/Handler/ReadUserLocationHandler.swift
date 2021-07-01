@@ -17,7 +17,7 @@ struct ReadUserLocationHandler: Handler {
         let span = tracer.span(name: "locations-\(userID)", from: connection)
 
         Metric
-            .counter(label: "usage", dimensions: ["path": "/user/{id}/location"])
+            .counter(label: "usage", dimensions: ["path": "/user/{id}/locations"])
             .increment()
 
         let querySpan = span.child(name: "query")
@@ -32,7 +32,7 @@ struct ReadUserLocationHandler: Handler {
                 }
                 
                 Metric
-                    .recorder(label: "output-count", dimensions: ["path": "/user/{id}/location"])
+                    .recorder(label: "output-count", dimensions: ["path": "/user/{id}/locations"])
                     .record(result.count)
             }
             .always { _ in
