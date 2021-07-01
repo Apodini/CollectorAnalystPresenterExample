@@ -2,7 +2,6 @@
 
 # Swift Package Manager
 Package.resolved
-*.xcodeproj
 .swiftpm
 .build/
 
@@ -11,9 +10,3 @@ xcuserdata/
 
 # Other files
 .DS_Store
-
-# Fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots/**/*.png
-fastlane/test_output

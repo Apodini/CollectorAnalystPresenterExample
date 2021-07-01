@@ -3,16 +3,18 @@ import SwiftUI
 
 
 @main
-struct PresenterExampleApp: App {
+struct ExampleApp: App {
     @StateObject var model = Model()
-
-    init() {
-        Presenter.use(plugin: AnalystPresenter())
-    }
-
+    
+    
     var body: some Scene {
         WindowGroup {
             ContentView(model: model)
         }
+    }
+    
+    
+    init() {
+        Presenter.use(plugin: AnalystPresenter())
     }
 }

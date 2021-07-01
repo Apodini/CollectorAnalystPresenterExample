@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+#  gateway:
+#    container_name: "gateway"
+#    image: "gateway:latest"
+#    build:
+#      context: ./Gateway/
+#      dockerfile: ./Dockerfile
+#    expose:
+#      - "80"
+#    depends_on:
+#      - "gatewayprometheus"
+#      - "jaeger"
+#    command: '-d'
+#  gatewayprometheus:
+#    image: "prom/prometheus"
+  database:
+    container_name: "database"
+    image: "database:latest"
+    build:
+      context: ./Database/
+      dockerfile: ./Dockerfile
+    depends_on:
+      - "databaseprometheus"
+      - "jaeger"
+    ports:
+      - "80"
+  databaseprometheus:
+    image: "prom/prometheus"
+#  processing:
+#    container_name: "processing"
+#    image: "processing:latest"
+#    build:
+#      context: ./Processing/
+#      dockerfile: ./Dockerfile
+#    depends_on:
+#      - "processingprometheus"
+#      - "jaeger"
+#  processingprometheus:
+#    image: "prom/prometheus"
+  jaeger:
+    image: "jaegertracing/all-in-one"

@@ -2,14 +2,10 @@ import SwiftUI
 
 
 struct ConnectView: View {
-    // MARK: Stored Properties
-
     var action: (URL) -> Void
-
     @State private var url = ""
-
-    // MARK: Computed Properties
-
+    
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 32) {
@@ -20,9 +16,8 @@ struct ConnectView: View {
             .navigationTitle("Select Server")
         }
     }
-
-    // MARK: Actions
-
+    
+    
     private func load() {
         if let url = URL(string: self.url) {
             action(url)

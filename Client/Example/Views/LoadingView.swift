@@ -3,14 +3,11 @@ import SwiftUI
 
 
 struct LoadingView: SwiftUI.View {
-    // MARK: Stored Properties
-
     var url: URL
     @SwiftUI.Binding var view: AnyView?
     @SwiftUI.Binding var error: String?
-
-    // MARK: Computed Properties
-
+    
+    
     var body: some SwiftUI.View {
         SwiftUI.NavigationView {
             SwiftUI.Color.clear
@@ -18,17 +15,15 @@ struct LoadingView: SwiftUI.View {
                 .navigationTitle("Loading...")
         }
     }
-
-    // MARK: Actions
-
+    
+    
     private func load() {
         URLSession.shared
             .dataTask(with: url, completionHandler: receive)
             .resume()
     }
-
-    // MARK: Helpers
-
+    
+    
     private func receive(data: Data?, response: URLResponse?, error: Error?) {
         if let error = error {
             self.error = "\(error)"
@@ -55,5 +50,4 @@ struct LoadingView: SwiftUI.View {
             self.error = "\(error)"
         }
     }
-
 }

@@ -2,13 +2,10 @@ import SwiftUI
 
 
 struct ErrorView: View {
-    // MARK: Stored Properties
-
     var error: String
     var action: () -> Void
-
-    // MARK: Computed Properties
-
+    
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 32) {

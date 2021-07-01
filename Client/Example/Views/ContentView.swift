@@ -3,16 +3,12 @@ import SwiftUI
 
 
 struct ContentView: SwiftUI.View {
-    // MARK: Stored Properties
-
     @ObservedObject var model: Model
-
     @SwiftUI.State private var url: URL?
     @SwiftUI.State private var error: String?
     @SwiftUI.State private var view: AnyView?
-
-    // MARK: Computed Properties
-
+    
+    
     var body: some SwiftUI.View {
         if let view = view {
             view.environmentObject(model)
