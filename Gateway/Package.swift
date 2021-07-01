@@ -4,38 +4,39 @@ import PackageDescription
 
 
 let package = Package(
-    name: "Gateway",
-    platforms: [.macOS(.v10_15)],
+    name: "GatewayWebService",
+    platforms: [
+        .macOS(.v10_15)
+    ],
     products: [
         .executable(
-            name: "Run",
-            targets: ["Run"]
+            name: "GatewayWebService",
+            targets: ["GatewayWebService"]
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(url: "https://github.com/Apodini/Analyst.git", from: "0.1.0"),
-        .package(url: "https://github.com/Apodini/Collector.git", from: "0.1.0")
+        .package(url: "https://github.com/Apodini/Apodini.git", .upToNextMinor(from: "0.2.0")),
+        .package(url: "https://github.com/Apodini/ApodiniAsyncHTTPClient.git", from: "0.1.1"),
+        .package(url: "https://github.com/Apodini/ApodiniCollector.git", .branch("develop")),
+        .package(url: "https://github.com/Apodini/ApodiniAnalystPresenter.git", .branch("develop"))
     ],
     targets: [
-        .target(
-            name: "App",
+        .executableTarget(
+            name: "GatewayWebService",
             dependencies: [
-                .product(name: "JaegerCollector", package: "Collector"),
-                .product(name: "PrometheusCollector", package: "Collector"),
-                .product(name: "JaegerAnalyst", package: "Analyst"),
-                .product(name: "PrometheusAnalyst", package: "Analyst"),
-                .product(name: "AnalystPresenter", package: "Analyst"),
-                .product(name: "Vapor", package: "vapor")
+                .product(name: "Apodini", package: "Apodini"),
+                .product(name: "ApodiniJobs", package: "Apodini"),
+                .product(name: "ApodiniREST", package: "Apodini"),
+                .product(name: "ApodiniAsyncHTTPClient", package: "ApodiniAsyncHTTPClient"),
+                .product(name: "ApodiniCollector", package: "ApodiniCollector"),
+                .product(name: "ApodiniAnalystPresenter", package: "ApodiniAnalystPresenter")
             ]
         ),
-        .executableTarget(
-            name: "Run",
-            dependencies: ["App"]
-        ),
         .testTarget(
-            name: "AppTests",
-            dependencies: ["App"]
+            name: "GatewayWebServiceTests",
+            dependencies: [
+                .target(name: "GatewayWebService")
+            ]
         )
     ]
 )

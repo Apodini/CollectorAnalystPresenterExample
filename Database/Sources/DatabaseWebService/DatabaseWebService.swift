@@ -1,5 +1,8 @@
 import Apodini
 import ApodiniREST
+import Apodini
+import ApodiniAnalystPresenter
+import ApodiniCollector
 import ApodiniDatabase
 import ArgumentParser
 import Foundation
@@ -8,10 +11,8 @@ import Foundation
 @main
 struct DatabaseWebService: WebService {
     @Option var port: Int = 80
-    @Option var jaegerHostname: String = "jaeger"
-    @Option var jaegerCollectorPort: Int = 14250
-    @Option var jaegerAnalystPort: Int = 16686
-    @Option var prometheusURL: URL = URL(string: "http://prometheus:9090/")!
+    @Option var jaegerURL: URL = URL(string: "http://jaeger:14250/")!
+    @Option var prometheusURL: URL = URL(string: "http://databaseprometheus:9090/")!
     
     @PathParameter var userId: Int
     
@@ -28,23 +29,24 @@ struct DatabaseWebService: WebService {
             .addMigrations(UserLocationModel())
         
         // Configure the UI Metrics Service with the passed in arguments
-        UIMetricsServiceConfiguration(
-            jaegerHostname: jaegerHostname,
-            jaegerAnalystPort: jaegerCollectorPort,
-            prometheusURL: prometheusURL
+        MetricsPresenterConfiguration(
+            prometheusURL: prometheusURL,
+            metric: Counter(
+                label: "http_requests_total",
+                dimensions: ["job": "database", "path": "GET /metrics"]
+            ),
+            title: "Database"
         )
-        
         // Configure the Tracer with the passed in arguments
         TracerConfiguration(
             serviceName: "database",
-            jaegerHostname: jaegerHostname,
-            jaegerCollectorPort: jaegerCollectorPort
+            jaegerURL: jaegerURL
         )
     }
 
     
     var content: some Component {
-        Group("user", $userId, "hotspots") {
+        Group("user", $userId, "location") {
             ReadUserLocationHandler(userID: $userId)
                 .operation(.read)
             CreateUserLocationHandler(userID: $userId)

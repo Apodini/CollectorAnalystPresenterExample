@@ -1,7 +1,7 @@
-import Collector
 import Apodini
+import ApodiniCollector
 import ApodiniAsyncHTTPClient
-
+import Foundation
 
 protocol DatabaseService {
     func query(userID: Int, span: Span) -> EventLoopFuture<[Coordinate]>
@@ -9,22 +9,20 @@ protocol DatabaseService {
 
 
 class RemoteDatabaseService: DatabaseService {
-    let hostname: String
-    let port: Int
+    let databaseServiceURL: URL
     let decoder = JSONDecoder()
     let client: HTTPClient
     
     
-    init(hostname: String, port: Int, client: HTTPClient) {
-        self.hostname = hostname
-        self.port = port
+    init(databaseServiceURL: URL, client: HTTPClient) {
+        self.databaseServiceURL = databaseServiceURL
         self.client = client
     }
     
     
     func query(userID: Int, span: Span) -> EventLoopFuture<[Coordinate]> {
         do {
-            var request = try HTTPClient.Request(url: "http://\(hostname):\(port)/user/\(userID)/location")
+            var request = try HTTPClient.Request(url: databaseServiceURL.appendingPathComponent("user/\(userID)/location"))
             span.propagate(in: &request)
             
             return client
@@ -60,14 +58,12 @@ fileprivate struct DatabaseServiceStorageKey: StorageKey {
 
 
 struct RemoteDatabaseServiceConfiguration: Configuration {
-    let hostname: String
-    let port: Int
+    let databaseServiceURL: URL
     
     
     func configure(_ app: Application) {
         app.storage[DatabaseServiceStorageKey.self] = RemoteDatabaseService(
-            hostname: hostname,
-            port: port,
+            databaseServiceURL: databaseServiceURL,
             client: app.httpClient
         )
     }

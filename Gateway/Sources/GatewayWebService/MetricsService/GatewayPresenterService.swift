@@ -1,56 +1,65 @@
+import Apodini
 import AsyncHTTPClient
-import AnalystPresenter
-import NIO
+import ApodiniAnalystPresenter
 import PrometheusAnalyst
 import JaegerAnalyst
 
-protocol MetricsService {
-    func view() throws -> EventLoopFuture<Data>
-}
 
-final class UIMetricsService: MetricsService {
-
-    // MARK: Stored Properties
-
+final class GatewayPresenterService: PresenterService {
+    let client: HTTPClient
     let metricsProvider: Prometheus
     let traceProvider: TraceProvider
-    let client: HTTPClient
-
-    // MARK: Computed Properties
-
+    let processingURL: URL
+    let databaseURL: URL
+    
+    
     var eventLoop: EventLoop {
-        metricsProvider.client.eventLoopGroup.next()
+        client.eventLoopGroup.next()
     }
-
-    // MARK: Initialization
-
-    public init(client: HTTPClient) {
+    var view: ViewFuture {
+        do {
+            return try listView()
+        } catch {
+            return eventLoop.makeFailedFuture(ApodiniError(type: .serverError, reason: "Could not generate Presenter UI."))
+        }
+    }
+    
+    
+    public init(
+        client: HTTPClient,
+        jaegerURL: URL,
+        prometheusURL: URL,
+        processingURL: URL,
+        databaseURL: URL
+    ) {
         Presenter.use(plugin: AnalystPresenter())
-
+        
         self.client = client
 
+        guard let jaegerHost = jaegerURL.host, let jaegerPort = jaegerURL.port else {
+            fatalError("Could not identify a hostname and port in the URL: \(jaegerURL)")
+        }
         let channel = ClientConnection.insecure(group: client.eventLoopGroup)
-            .connect(host: Configuration.jaegerHostname, port: Configuration.jaegerAnalystPort)
-
+            .connect(host: jaegerHost, port: jaegerPort)
         self.traceProvider = JaegerProvider(channel: channel)
-
+        
         self.metricsProvider = Prometheus(
-            baseURL: Configuration.prometheusURL,
+            baseURL: prometheusURL,
             client: client
         )
+        
+        self.processingURL = processingURL
+        self.databaseURL = databaseURL
     }
 
     // MARK: Nested Types
 
-    func view() throws -> EventLoopFuture<Data> {
-        try listView()
-        .flatMapThrowing { try Presenter.encode(CoderView($0)) }
-    }
-
     private func listView() throws -> ViewFuture {
         EventLoopFuture<(_CodableView, _CodableView, _CodableView)>
-        .combine(try gateway(), try database(), try processing())
-        .map { self.listView(gateway: $0, database: $1, processing: $2) }
+            .combine(try gateway(), try database(), try processing())
+            .map {
+                self.listView(gateway: $0, database: $1, processing: $2)
+            }
     }
 
     private func listView(gateway: _CodableView, database: _CodableView, processing: _CodableView) -> some View {
@@ -83,7 +92,7 @@ final class UIMetricsService: MetricsService {
 
     private func database() throws -> ViewFuture {
         let request = try HTTPClient.Request(
-            url: "http://database:80/metrics-ui",
+            url: databaseURL.appendingPathComponent("/v1/metrics-ui"),
             method: .GET,
             headers: ["Content-Type": "application/json"]
         )
@@ -102,7 +111,7 @@ final class UIMetricsService: MetricsService {
 
     private func processing() throws -> ViewFuture {
         let request = try HTTPClient.Request(
-            url: "http://processing:80/metrics-ui",
+            url: processingURL.appendingPathComponent("/v1/metrics-ui"),
             method: .GET,
             headers: ["Content-Type": "application/json"]
         )
@@ -140,30 +149,26 @@ final class UIMetricsService: MetricsService {
         for sequence: C,
         create: (C.Element) -> Cell
     ) -> some View {
-
         return ScrollView {
             VStack(alignment: .leading) {
                 sequence.map(create)
-            }
-            .padding(8)
-        }
-        .navigationBarTitle(.static(title), displayMode: .inline)
+            }.padding(8)
+        }.navigationBarTitle(.static(title), displayMode: .inline)
     }
 
     private func cell(title: String, subtitle: String) -> some View {
         return VStack(alignment: .leading) {
             HStack {
                 Text(.static(title))
-                .font(.headline)
-
+                    .font(.headline)
                 Spacer()
             }
             Text(.static(subtitle))
                 .font(.caption)
         }
-        .padding(16)
-        .card()
-        .padding(8)
+            .padding(16)
+            .card()
+            .padding(8)
     }
 
     private func lastTraces() throws -> ViewFuture {
@@ -203,8 +208,7 @@ final class UIMetricsService: MetricsService {
                 trace.spans.map { span in
                     spanRow(root: root, for: span)
                 }
-            }
-            .padding(8)
+            }.padding(8)
             Divider()
         }
     }
@@ -221,64 +225,68 @@ final class UIMetricsService: MetricsService {
         }
     }
 
+    private func service(title: String, cards: [ViewFuture]) -> ViewFuture {
+        EventLoopFuture.whenAllSucceed(cards, on: eventLoop)
+        .map { cards in
+            ScrollView {
+                VStack {
+                    cards
+                }.padding(8)
+            }.navigationBarTitle(.static(title))
+        }
+    }
+
+    private func metricsRequests(job: String) -> ViewFuture {
+        let counter = Counter(label: "http_requests_total",
+                              dimensions: ["job": job, "path": "GET /metrics"])
+
+        let range = TimeRange.range(.days(3), step: .hours(1))
+        let query = counter.query(scalar: .delta(counter[range.step]))
+        return graph(for: query.in(range), title: "GET /metrics")
+    }
+
+    private func graph(for query: RangeQuery<Analyst.Counter>, title: String? = nil) -> ViewFuture {
+        metricsProvider.results(for: query)
+        .map { self.view(for: $0, title: title ?? query.label) }
+    }
+
+    private func graph(for query: RangeQuery<Analyst.Timer>, title: String? = nil) -> ViewFuture {
+        metricsProvider.results(for: query)
+            .map { self.view(for: $0, title: title ?? query.label) }
+    }
+
+    private func view(for results: [RangeResult], title: String) -> some View {
+        GraphCard(configuration: Color.systemColorGraphConfiguration, results: results)
+            .view(title: title, subtitle: "")
+    }
 }
 
-extension EventLoopFuture {
 
-    static func combine<A, B>(
-        _ a: EventLoopFuture<A>,
-        _ b: EventLoopFuture<B>
-    ) -> EventLoopFuture<(A, B)> where Value == (A, B) {
-
-        a.flatMap { aValue in b.map { (aValue, $0) } }
+struct GatewayPresenterConfiguration: Configuration {
+    let jaegerURL: URL
+    let prometheusURL: URL
+    let processingURL: URL
+    let databaseURL: URL
+    
+    public init(
+        jaegerURL: URL,
+        prometheusURL: URL,
+        processingURL: URL,
+        databaseURL: URL
+    ) {
+        self.jaegerURL = jaegerURL
+        self.prometheusURL = prometheusURL
+        self.processingURL = processingURL
+        self.databaseURL = databaseURL
     }
-
-    static func combine<A, B, C>(
-        _ a: EventLoopFuture<A>,
-        _ b: EventLoopFuture<B>,
-        _ c: EventLoopFuture<C>
-    ) -> EventLoopFuture<(A, B, C)> where Value == (A, B, C) {
-        EventLoopFuture<(A, B)>.combine(a, b)
-        .flatMap { aValue, bValue in c.map { (aValue, bValue, $0) } }
+    
+    public func configure(_ app: Application) {
+        app.presenterService = GatewayPresenterService(
+            client: app.httpClient,
+            jaegerURL: jaegerURL,
+            prometheusURL: prometheusURL,
+            processingURL: processingURL,
+            databaseURL: databaseURL
+        )
     }
-
-    static func combine<A, B, C, D>(
-        _ a: EventLoopFuture<A>,
-        _ b: EventLoopFuture<B>,
-        _ c: EventLoopFuture<C>,
-        _ d: EventLoopFuture<D>
-    ) -> EventLoopFuture<(A, B, C, D)> where Value == (A, B, C, D) {
-
-        EventLoopFuture<((A, B), (C, D))>
-        .combine(.combine(a, b), .combine(c, d))
-        .map { abValues, cdValues in (abValues.0, abValues.1, cdValues.0, cdValues.1) }
-    }
-
-    static func combine<A, B, C, D, E>(
-        _ a: EventLoopFuture<A>,
-        _ b: EventLoopFuture<B>,
-        _ c: EventLoopFuture<C>,
-        _ d: EventLoopFuture<D>,
-        _ e: EventLoopFuture<E>
-    ) -> EventLoopFuture where Value == (A, B, C, D, E) {
-
-        EventLoopFuture<((A, B), (C, D, E))>
-        .combine(.combine(a, b), .combine(c, d, e))
-        .map { abValues, cdeValues in (abValues.0, abValues.1, cdeValues.0, cdeValues.1, cdeValues.2) }
-    }
-
-    static func combine<A, B, C, D, E, F>(
-        _ a: EventLoopFuture<A>,
-        _ b: EventLoopFuture<B>,
-        _ c: EventLoopFuture<C>,
-        _ d: EventLoopFuture<D>,
-        _ e: EventLoopFuture<E>,
-        _ f: EventLoopFuture<F>
-    ) -> EventLoopFuture where Value == (A, B, C, D, E, F) {
-
-        EventLoopFuture<((A, B, C), (D, E, F))>
-        .combine(.combine(a, b, c), .combine(d, e, f))
-        .map { first, second in (first.0, first.1, first.2, second.0, second.1, second.2) }
-    }
-
 }

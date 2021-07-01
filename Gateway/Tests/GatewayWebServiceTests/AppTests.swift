@@ -1,7 +1,7 @@
-import App
+import GatewayWebService
 import XCTest
 
-final class AppTests: XCTestCase {
+final class GatewayTests: XCTestCase {
     func exampleTest() throws {
         XCTAssert(true)
     }
