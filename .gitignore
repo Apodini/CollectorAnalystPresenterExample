@@ -2,7 +2,6 @@
 
 # Swift Package Manager
 Package.resolved
-.swiftpm
 .build/
 
 # Xcode User settings
