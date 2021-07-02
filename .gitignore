@@ -2,6 +2,7 @@
 
 # Swift Package Manager
 .build/
+Package.resolved
 
 # Xcode User settings
 xcuserdata/
