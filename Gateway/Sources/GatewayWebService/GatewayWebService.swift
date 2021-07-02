@@ -10,10 +10,11 @@ import Foundation
 @main
 struct GatewayWebService: WebService {
     @Option var port: Int = 80
-    @Option var jaegerURL: URL = URL(string: "http://jaeger:14250/")!
-    @Option var prometheusURL: URL = URL(string: "http://gatewayprometheus:9090/")!
-    @Option var processingServiceURL: URL = URL(string: "http://localhost:82/")!
-    @Option var databaseServiceURL: URL = URL(string: "http://localhost:81/")!
+    @Option var jaegerCollectorURL: URL = URL(string: "http://localhost:14250")!
+    @Option var jaegerQueryURL: URL = URL(string: "http://localhost:16685")!
+    @Option var prometheusURL: URL = URL(string: "http://localhost:9090")!
+    @Option var processingServiceURL: URL = URL(string: "http://localhost:82")!
+    @Option var databaseServiceURL: URL = URL(string: "http://localhost:81")!
     
     @PathParameter var userId: Int
     
@@ -27,7 +28,7 @@ struct GatewayWebService: WebService {
         
         // Configure the Gateway UI Service with the passed in arguments
         GatewayPresenterConfiguration(
-            jaegerURL: jaegerURL,
+            jaegerURL: jaegerQueryURL,
             prometheusURL: prometheusURL,
             processingURL: processingServiceURL,
             databaseURL: databaseServiceURL
@@ -35,7 +36,7 @@ struct GatewayWebService: WebService {
         // Configure the Tracer with the passed in arguments
         TracerConfiguration(
             serviceName: "processing",
-            jaegerURL: jaegerURL
+            jaegerURL: jaegerCollectorURL
         )
         
         // Configure the remote database serrvice with the passed in arguments
@@ -57,7 +58,7 @@ struct GatewayWebService: WebService {
                 .operation(.create)
         }
         Group("metrics-ui") {
-            MetricsUIHandler()
+            PresenterHandler()
         }
         Group("metrics") {
             MetricsHandler()

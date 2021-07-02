@@ -12,7 +12,7 @@ struct ConnectView: View {
         
         var components = URLComponents()
         components.scheme = "http"
-        components.host = hostname
+        components.host = hostname.lowercased()
         components.path = "/v1/metrics-ui"
         return components.url
     }
@@ -22,8 +22,9 @@ struct ConnectView: View {
             VStack(alignment: .center, spacing: 8) {
                 TextField("hostname", text: $hostname)
                     .textFieldStyle(.roundedBorder)
-                Text(url?.relativeString ?? "")
+                Text(url?.relativeString ?? "Please enter a hostname")
                     .keyboardType(.URL)
+                    .autocapitalization(.none)
                     .font(.callout)
                     .foregroundColor(Color.gray)
                     .padding(.bottom, 16)

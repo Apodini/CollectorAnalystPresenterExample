@@ -8,6 +8,9 @@
       location = "group:LICENSE">
    </FileRef>
    <FileRef
+      location = "group:docker-compose-development.yml">
+   </FileRef>
+   <FileRef
       location = "group:docker-compose.yml">
    </FileRef>
    <FileRef

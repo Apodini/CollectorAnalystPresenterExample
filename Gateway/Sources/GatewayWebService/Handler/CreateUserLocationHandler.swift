@@ -14,7 +14,7 @@ struct CreateUserLocationHandler: Handler {
     
     func handle() throws -> EventLoopFuture<Coordinate> {
         do {
-            Metric.counter(label: "location_usage_count", dimensions: ["userID": userID.description]).increment()
+            Metric.counter(label: "location_usage", dimensions: ["userID": userID.description]).increment()
             Metric.gauge(label: "location_latitude", dimensions: ["userID": userID.description]).record(location.latitude)
             Metric.gauge(label: "location_longitude", dimensions: ["userID": userID.description]).record(location.longitude)
             

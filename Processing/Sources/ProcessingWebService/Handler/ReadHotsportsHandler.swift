@@ -15,11 +15,11 @@ struct ReadHotspotsHandler: Handler {
     
     
     func handle() throws -> EventLoopFuture<[Coordinate]> {
-        let span = tracer.span(name: "hotspots-\(userID)", from: connection)
-        let querySpan = span.child(name: "database-access")
+        let span = tracer.span(name: "hotspots", from: connection)
+        let querySpan = span.child(name: "database")
 
         Metric
-            .counter(label: "usage", dimensions: ["path": "user/{id}/hotspots"])
+            .counter(label: "hotspots_usage", dimensions: ["path": "user/{id}/hotspots"])
             .increment()
 
         return try databaseService
@@ -29,15 +29,15 @@ struct ReadHotspotsHandler: Handler {
             }
             .flatMapThrowing { locations in
                 Metric
-                    .recorder(label: "input-count", dimensions: ["path": "user/{id}/hotspots"])
+                    .recorder(label: "hotspots_locations", dimensions: ["path": "user/{id}/hotspots"])
                     .record(locations.count)
 
-                let child = span.child(name: "hotspots")
+                let child = span.child(name: "calculation")
                 let spots = try processingService.hotspots(in: locations)
                 child.finish()
 
                 Metric
-                    .recorder(label: "output-count", dimensions: ["path": "user/{id}/hotspots"])
+                    .recorder(label: "hotspots", dimensions: ["path": "user/{id}/hotspots"])
                     .record(spots.count)
 
                 return spots

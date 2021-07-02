@@ -9,9 +9,11 @@ struct LoadingView: SwiftUI.View {
     
     
     var body: some SwiftUI.View {
-        ProgressView()
-            .onAppear(perform: load)
-            .navigationTitle("Loading...")
+        NavigationView {
+            ProgressView()
+                .onAppear(perform: load)
+                .navigationTitle("Loading...")
+        }
     }
     
     

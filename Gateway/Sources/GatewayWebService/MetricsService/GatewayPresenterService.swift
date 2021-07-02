@@ -23,6 +23,12 @@ final class GatewayPresenterService: PresenterService {
             return eventLoop.makeFailedFuture(ApodiniError(type: .serverError, reason: "Could not generate Presenter UI."))
         }
     }
+    public var encodedView: EventLoopFuture<Blob> {
+        view.flatMapThrowing {
+            let data = try Presenter.encode(CoderView($0))
+            return Blob(data, type: .application(.json))
+        }
+    }
     
     
     public init(
@@ -33,6 +39,7 @@ final class GatewayPresenterService: PresenterService {
         databaseURL: URL
     ) {
         Presenter.use(plugin: AnalystPresenter())
+        Presenter.use(view: CoderView.self)
         
         self.client = client
 
@@ -69,38 +76,33 @@ final class GatewayPresenterService: PresenterService {
                     NavigationLink(
                         destination: CoderView(gateway),
                         isActive: .at("gateway.isActive", default: false),
-                        label: self.cell(title: "Gateway", subtitle: "Microservice")
+                        label: self.cell(title: "Gateway", subtitle: "Web Service")
                     )
 
                     NavigationLink(
                         destination: CoderView(database),
                         isActive: .at("database.isActive", default: false),
-                        label: self.cell(title: "Database", subtitle: "Microservice")
+                        label: self.cell(title: "Database", subtitle: "Web Service")
                     )
 
                     NavigationLink(
                         destination: CoderView(processing),
                         isActive: .at("processing.isActive", default: false),
-                        label: self.cell(title: "Processing", subtitle: "Microservice")
+                        label: self.cell(title: "Processing", subtitle: "Web Service")
                     )
                 }
                 .padding(8)
             }
-            .navigationBarTitle(.static("Prometheus"))
+            .navigationBarTitle(.static("System Status"))
         }
     }
 
     private func database() throws -> ViewFuture {
-        let request = try HTTPClient.Request(
-            url: databaseURL.appendingPathComponent("/v1/metrics-ui"),
-            method: .GET,
-            headers: ["Content-Type": "application/json"]
-        )
-        return client
-            .execute(request: request)
+        client
+            .execute(request: try HTTPClient.Request(url: databaseURL.appendingPathComponent("/v1/metrics-ui")))
             .map { response in
                 guard let body = response.body else {
-                    return Text(.static("not found"))
+                    return Text(.static("Database UI could not be loaded"))
                 }
                 return DataView(.init(buffer: body))
             }
@@ -110,16 +112,11 @@ final class GatewayPresenterService: PresenterService {
     }
 
     private func processing() throws -> ViewFuture {
-        let request = try HTTPClient.Request(
-            url: processingURL.appendingPathComponent("/v1/metrics-ui"),
-            method: .GET,
-            headers: ["Content-Type": "application/json"]
-        )
-        return client
-            .execute(request: request)
+        client
+            .execute(request: try HTTPClient.Request(url: processingURL.appendingPathComponent("/v1/metrics-ui")))
             .map { response in
                 guard let body = response.body else {
-                    return Text(.static("not found"))
+                    return Text(.static("Processing UI could not be loaded"))
                 }
                 return DataView(.init(buffer: body))
             }
@@ -130,7 +127,8 @@ final class GatewayPresenterService: PresenterService {
 
     private func gateway() throws -> ViewFuture {
         service(title: "Gateway", cards: [
-            metricsRequests(job: "gateway"),
+            metricsCounterGraph(label: "location_usage", title: "Location Usage"),
+            metricsCounterGraph(label: "hotspots_usage", title: "Hotspots Usage"),
             periodicTaskDuration(),
             try dependencies(),
             try lastTraces()
@@ -184,7 +182,8 @@ final class GatewayPresenterService: PresenterService {
 
     private func dependencies() throws -> ViewFuture {
         let startDate = Date().addingTimeInterval(-24 * 60 * 60)
-        return traceProvider.dependencies(from: startDate)
+        return traceProvider
+            .dependencies(from: startDate)
             .map { dependencies in
                 VStack {
                     dependencies.map { dependency in
@@ -236,23 +235,29 @@ final class GatewayPresenterService: PresenterService {
         }
     }
 
-    private func metricsRequests(job: String) -> ViewFuture {
-        let counter = Counter(label: "http_requests_total",
-                              dimensions: ["job": job, "path": "GET /metrics"])
+    private func metricsCounterGraph(label: String, title: String? = nil) -> ViewFuture {
+        let counter = Counter(
+            label: label,
+            dimensions: ["job": "gateway"]
+        )
 
         let range = TimeRange.range(.days(3), step: .hours(1))
         let query = counter.query(scalar: .delta(counter[range.step]))
-        return graph(for: query.in(range), title: "GET /metrics")
+        return graph(for: query.in(range), title: title ?? label)
     }
 
     private func graph(for query: RangeQuery<Analyst.Counter>, title: String? = nil) -> ViewFuture {
         metricsProvider.results(for: query)
-        .map { self.view(for: $0, title: title ?? query.label) }
+            .map {
+                self.view(for: $0, title: title ?? query.label)
+            }
     }
 
     private func graph(for query: RangeQuery<Analyst.Timer>, title: String? = nil) -> ViewFuture {
         metricsProvider.results(for: query)
-            .map { self.view(for: $0, title: title ?? query.label) }
+            .map {
+                self.view(for: $0, title: title ?? query.label)
+            }
     }
 
     private func view(for results: [RangeResult], title: String) -> some View {

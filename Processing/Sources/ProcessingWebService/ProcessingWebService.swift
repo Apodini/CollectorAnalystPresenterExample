@@ -9,9 +9,9 @@ import Foundation
 @main
 struct ProcessingWebService: WebService {
     @Option var port: Int = 82
-    @Option var jaegerURL: URL = URL(string: "http://jaeger:14250/")!
-    @Option var prometheusURL: URL = URL(string: "http://processingprometheus:9090/")!
-    @Option var databaseServiceURL: URL = URL(string: "http://localhost:81/")!
+    @Option var jaegerCollectorURL: URL = URL(string: "http://localhost:14250")!
+    @Option var prometheusURL: URL = URL(string: "http://localhost:9092")!
+    @Option var databaseServiceURL: URL = URL(string: "http://localhost:81")!
     
     @PathParameter var userId: Int
     
@@ -27,15 +27,15 @@ struct ProcessingWebService: WebService {
         MetricsPresenterConfiguration(
             prometheusURL: prometheusURL,
             metric: Counter(
-                label: "http_requests_total",
-                dimensions: ["job": "processing", "path": "GET /metrics"]
+                label: "hotspots_usage",
+                dimensions: ["job": "processing", "path": "user/{id}/hotspots"]
             ),
             title: "Processing"
         )
         // Configure the Tracer with the passed in arguments
         TracerConfiguration(
             serviceName: "processing",
-            jaegerURL: jaegerURL
+            jaegerURL: jaegerCollectorURL
         )
         
         // Configure the remote database serrvice with the passed in arguments
@@ -50,7 +50,7 @@ struct ProcessingWebService: WebService {
             ReadHotspotsHandler(userID: $userId)
         }
         Group("metrics-ui") {
-            MetricsUIHandler()
+            PresenterHandler()
         }
         Group("metrics") {
             MetricsHandler()

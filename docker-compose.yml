@@ -1,0 +1,58 @@
+version: "3.9"
+services:
+  jaeger:
+    image: "jaegertracing/all-in-one"
+    container_name: "jaeger"
+  gateway:
+    container_name: "gateway"
+    build:
+      context: ./Gateway
+      dockerfile: ./Dockerfile
+    ports:
+      - "80:80"
+    command: ["--port", "80", "--jaeger-collector-url", "http://jaeger:14250", "--jaeger-query-url", "http://jaeger:16685", "--prometheus-url", "http://gatewayprometheus:9090", "--processing-service-url", "http://processing", "--database-service-url", "http://database"]
+    depends_on:
+      - database
+      - processing
+      - jaeger
+      - gatewayprometheus
+  gatewayprometheus:
+    image: "prom/prometheus"
+    container_name: "gatewayprometheus"
+    volumes:
+      - ${PWD}/Gateway/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+  database:
+    container_name: "database"
+    build:
+      context: ./Database
+      dockerfile: ./Dockerfile
+    command: ["--port", "80", "--jaeger-collector-url", "http://jaeger:14250", "--prometheus-url", "http://databaseprometheus:9090"]
+    depends_on:
+      - jaeger
+      - databaseprometheus
+  databaseprometheus:
+    image: "prom/prometheus"
+    container_name: "databaseprometheus"
+    volumes:
+      - ${PWD}/Database/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+  processing:
+    container_name: "processing"
+    build:
+      context: ./Processing
+      dockerfile: ./Dockerfile
+    command: ["--port", "80", "--jaeger-collector-url", "http://jaeger:14250", "--prometheus-url", "http://processingprometheus:9090", "--database-service-url", "http://database"]
+    depends_on:
+      - database
+      - jaeger
+      - processingprometheus
+  processingprometheus:
+    image: "prom/prometheus"
+    container_name: "processingprometheus"
+    volumes:
+      - ${PWD}/Processing/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'

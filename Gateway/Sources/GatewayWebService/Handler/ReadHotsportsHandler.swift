@@ -13,7 +13,7 @@ struct ReadHotspotsHandler: Handler {
     
     func handle() throws -> EventLoopFuture<[Coordinate]> {
         do {
-            Metric.counter(label: "hotspots_usage_count", dimensions: ["userID": userID.description]).increment()
+            Metric.counter(label: "hotspots_usage", dimensions: ["userID": userID.description]).increment()
             
             return try connectionService.hotspots(userID: userID)
         } catch {

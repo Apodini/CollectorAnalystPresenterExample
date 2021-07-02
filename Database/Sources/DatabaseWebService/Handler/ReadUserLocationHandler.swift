@@ -14,13 +14,13 @@ struct ReadUserLocationHandler: Handler {
     
     
     func handle() -> EventLoopFuture<[Coordinate]> {
-        let span = tracer.span(name: "locations-\(userID)", from: connection)
+        let span = tracer.span(name: "location", from: connection)
 
         Metric
-            .counter(label: "usage", dimensions: ["path": "/user/{id}/locations"])
+            .counter(label: "location_usage", dimensions: ["method": "GET", "path": "/user/{id}/locations"])
             .increment()
 
-        let querySpan = span.child(name: "query")
+        let querySpan = span.child(name: "location-query")
 
         return databaseService.query(userID: userID)
             .always { _ in
@@ -32,7 +32,7 @@ struct ReadUserLocationHandler: Handler {
                 }
                 
                 Metric
-                    .recorder(label: "output-count", dimensions: ["path": "/user/{id}/locations"])
+                    .recorder(label: "location_results", dimensions: ["method": "GET", "path": "/user/{id}/locations"])
                     .record(result.count)
             }
             .always { _ in

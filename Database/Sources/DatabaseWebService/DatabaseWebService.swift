@@ -11,8 +11,8 @@ import Foundation
 @main
 struct DatabaseWebService: WebService {
     @Option var port: Int = 81
-    @Option var jaegerURL: URL = URL(string: "http://jaeger:14250/")!
-    @Option var prometheusURL: URL = URL(string: "http://databaseprometheus:9090/")!
+    @Option var jaegerCollectorURL: URL = URL(string: "http://localhost:14250")!
+    @Option var prometheusURL: URL = URL(string: "http://localhost:9091")!
     
     @PathParameter var userId: Int
     
@@ -32,15 +32,15 @@ struct DatabaseWebService: WebService {
         MetricsPresenterConfiguration(
             prometheusURL: prometheusURL,
             metric: Counter(
-                label: "http_requests_total",
-                dimensions: ["job": "database", "path": "GET /metrics"]
+                label: "location_usage",
+                dimensions: ["job": "database"]
             ),
-            title: "Database"
+            title: "Total Database Usage"
         )
         // Configure the Tracer with the passed in arguments
         TracerConfiguration(
             serviceName: "database",
-            jaegerURL: jaegerURL
+            jaegerURL: jaegerCollectorURL
         )
     }
 
@@ -53,7 +53,7 @@ struct DatabaseWebService: WebService {
                 .operation(.create)
         }
         Group("metrics-ui") {
-            MetricsUIHandler()
+            PresenterHandler()
         }
         Group("metrics") {
             MetricsHandler()
