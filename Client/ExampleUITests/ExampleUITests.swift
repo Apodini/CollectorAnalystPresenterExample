@@ -3,7 +3,7 @@ import XCTest
 
 class ExampleUITests: XCTestCase {
     override func setUpWithError() throws {
-        super.setUpWithError()
+        try super.setUpWithError()
         
         continueAfterFailure = false
     }
