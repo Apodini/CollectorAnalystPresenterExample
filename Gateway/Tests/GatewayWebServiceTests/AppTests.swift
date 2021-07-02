@@ -1,4 +1,3 @@
-import GatewayWebService
 import XCTest
 
 
