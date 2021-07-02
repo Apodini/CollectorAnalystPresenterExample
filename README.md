@@ -10,8 +10,8 @@ A client application allows developers to observe inisights generated using [Ana
 
 ## <a name="RunTheExampleSystem"></a>Run the Example System
 
-You can start the web services on any system that supports [docker](https://www.docker.com) and [docker compose](https://docs.docker.com/compose/). Follow the instructions on https://docs.docker.com/compose/install/ to install docker and docker compose.
-You will need a macOS instance to build and run the example application. Xcode 13 is required to build and run the example client application. Follow the instructions on https://developer.apple.com/xcode/ to install the latest version of Xcode.
+You can start the web services on any system that supports [docker](https://www.docker.com) and [docker compose](https://docs.docker.com/compose/). Follow the instructions on https://docs.docker.com/compose/install/ to install docker and docker compose.  
+Xcode 13 (only available on macOS) is required to build and run the example client application. Follow the instructions on https://developer.apple.com/xcode/ to install the latest version of Xcode.
 
 1. Start the web services by running the `$ docker compose up` command in the root of the repository. It compiles and starts up all three web services as well as adjacently deployed [Jaeger](https://www.jaegertracing.io) and [Prometheus](https://prometheus.io) instances.
 2. You can now interact with the API using your favorite tool to explore RESTful APIs. The section [System Functionality](#SystemFunctionality) includes a detailed description of the API endpoints.
@@ -27,9 +27,9 @@ The system can collect locations shared by users and generates hotspots indicati
 You can try out the following curl command to set a request to the gateway:
 ```bash
 curl --header "Content-Type: application/json" \
-   --request POST \
-   --data '{"latitude": 42.0, "longitude": 24.0}' \
-   http://localhost/v1/user/1/locations
+     --request POST \
+     --data '{"latitude": 42.0, "longitude": 24.0}' \
+     http://localhost/v1/user/1/locations
 ```
 
 **Get hotspots**
