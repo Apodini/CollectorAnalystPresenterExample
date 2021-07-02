@@ -41,12 +41,14 @@ curl http://localhost/v1/user/1/hotspots
 ```
 
 **Metrics and Presenter Handler**
+
 In addition, the gateway includes a `/v1/metrics` endpoint to deliver metrics information to Prometheus and a `/v1/metrics-ui` endpoint that delivers the [Presenter](https://github.com/Apodini/Presenter) UI to the client application.
 
 ## <a name="DevelopmentSetup"></a>Development Setup
 
 To easily continue developing the example system, you can open the *Example.xcworkspace* found at the root of the repo using Xcode. The workspace bundles all three web services and the client application. You can run and build the client application and web services as described in [Running Your App in the Simulator or on a Device](https://developer.apple.com/documentation/xcode/running-your-app-in-the-simulator-or-on-a-device) by selecting the corresponding scheme.
-To test the collection of metrics and traces, you can run the `$ docker compose -f docker-compose-development.yml up` command in the root of the repo start-up adjacently deployed [Jaeger](https://www.jaegertracing.io) and [Prometheus](https://prometheus.io) instances used by the web services. All web services are configured to connect to the instances started using the $ docker compose -f docker-compose-development.yml up` command.
+
+To test the collection of metrics and traces, you can run the `$ docker compose -f docker-compose-development.yml up` command in the root of the repo start-up adjacently deployed [Jaeger](https://www.jaegertracing.io) and [Prometheus](https://prometheus.io) instances used by the web services. All web services are configured to connect to the instances started using the `$ docker compose -f docker-compose-development.yml up` command.
 
 ## Contributing
 Contributions to this project are welcome. Please make sure to read the [contribution guidelines](https://github.com/Apodini/.github/blob/release/CONTRIBUTING.md) first.
