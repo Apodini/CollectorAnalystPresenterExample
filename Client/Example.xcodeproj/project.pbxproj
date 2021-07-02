@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6501B338268F2E23001EC708 /* ExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6501B337268F2E23001EC708 /* ExampleUITests.swift */; };
 		657977F5268DD3120099F653 /* ConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657977EF268DD3100099F653 /* ConnectView.swift */; };
 		657977F6268DD3120099F653 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657977F0268DD3110099F653 /* ExampleApp.swift */; };
 		657977F8268DD3120099F653 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657977F2268DD3110099F653 /* LoadingView.swift */; };
@@ -16,7 +17,19 @@
 		65797801268DD4490099F653 /* Presenter in Frameworks */ = {isa = PBXBuildFile; productRef = 65797800268DD4490099F653 /* Presenter */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		6501B339268F2E23001EC708 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 657977D6268DD1C50099F653 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 657977DD268DD1C60099F653;
+			remoteInfo = Example;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		6501B335268F2E23001EC708 /* ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6501B337268F2E23001EC708 /* ExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleUITests.swift; sourceTree = "<group>"; };
 		657977DE268DD1C60099F653 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		657977EF268DD3100099F653 /* ConnectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectView.swift; sourceTree = "<group>"; };
 		657977F0268DD3110099F653 /* ExampleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
@@ -26,6 +39,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6501B332268F2E23001EC708 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		657977DB268DD1C60099F653 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -38,10 +58,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6501B336268F2E23001EC708 /* ExampleUITests */ = {
+			isa = PBXGroup;
+			children = (
+				6501B337268F2E23001EC708 /* ExampleUITests.swift */,
+			);
+			path = ExampleUITests;
+			sourceTree = "<group>";
+		};
 		657977D5268DD1C50099F653 = {
 			isa = PBXGroup;
 			children = (
 				657977E0268DD1C60099F653 /* Example */,
+				6501B336268F2E23001EC708 /* ExampleUITests */,
 				657977DF268DD1C60099F653 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				657977DE268DD1C60099F653 /* Example.app */,
+				6501B335268F2E23001EC708 /* ExampleUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -77,6 +107,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		6501B334268F2E23001EC708 /* ExampleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6501B33B268F2E23001EC708 /* Build configuration list for PBXNativeTarget "ExampleUITests" */;
+			buildPhases = (
+				6501B331268F2E23001EC708 /* Sources */,
+				6501B332268F2E23001EC708 /* Frameworks */,
+				6501B333268F2E23001EC708 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6501B33A268F2E23001EC708 /* PBXTargetDependency */,
+			);
+			name = ExampleUITests;
+			productName = ExampleUITests;
+			productReference = 6501B335268F2E23001EC708 /* ExampleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		657977DD268DD1C60099F653 /* Example */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 657977EC268DD1C70099F653 /* Build configuration list for PBXNativeTarget "Example" */;
@@ -108,6 +156,10 @@
 				LastSwiftUpdateCheck = 1300;
 				LastUpgradeCheck = 1300;
 				TargetAttributes = {
+					6501B334268F2E23001EC708 = {
+						CreatedOnToolsVersion = 13.0;
+						TestTargetID = 657977DD268DD1C60099F653;
+					};
 					657977DD268DD1C60099F653 = {
 						CreatedOnToolsVersion = 13.0;
 					};
@@ -131,11 +183,19 @@
 			projectRoot = "";
 			targets = (
 				657977DD268DD1C60099F653 /* Example */,
+				6501B334268F2E23001EC708 /* ExampleUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6501B333268F2E23001EC708 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		657977DC268DD1C60099F653 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -146,6 +206,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6501B331268F2E23001EC708 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6501B338268F2E23001EC708 /* ExampleUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		657977DA268DD1C60099F653 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -160,7 +228,57 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		6501B33A268F2E23001EC708 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 657977DD268DD1C60099F653 /* Example */;
+			targetProxy = 6501B339268F2E23001EC708 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		6501B33C268F2E23001EC708 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ase.in.tum.de.ExampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Example;
+			};
+			name = Debug;
+		};
+		6501B33D268F2E23001EC708 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ase.in.tum.de.ExampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Example;
+			};
+			name = Release;
+		};
 		657977EA268DD1C70099F653 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -282,10 +400,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Don't Code Sign";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Example/Preview Content\"";
-				DEVELOPMENT_TEAM = WCM2L8RG39;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -299,7 +418,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ase.in.tum.de.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = ase.in.tum.de.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -312,10 +431,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Don't Code Sign";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Example/Preview Content\"";
-				DEVELOPMENT_TEAM = WCM2L8RG39;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -329,7 +449,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ase.in.tum.de.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = ase.in.tum.de.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -340,6 +460,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6501B33B268F2E23001EC708 /* Build configuration list for PBXNativeTarget "ExampleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6501B33C268F2E23001EC708 /* Debug */,
+				6501B33D268F2E23001EC708 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		657977D9268DD1C50099F653 /* Build configuration list for PBXProject "Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

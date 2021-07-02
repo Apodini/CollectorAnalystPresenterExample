@@ -1,0 +1,35 @@
+name: Build Docker Compose
+
+on:
+  push:
+    branches:
+      - develop
+      - release
+  pull_request:
+    branches:
+      - develop
+      - release
+
+jobs:
+  docker:
+    name: Docker Compose Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Start containers
+        run: docker-compose up -d --build
+      - name: Test Gatway web service
+        run: |
+          sleep 3
+          curl --header "Content-Type: application/json" \
+               --request POST \
+               --data '{"latitude": 0.0, "longitude": 0.0}' \
+               --fail \
+               http://localhost/v1/user/1/locations
+          curl --fail http://localhost/v1/user/1/hotspots
+          curl --fail http://localhost/v1/metrics
+          curl --fail http://localhost/v1/metrics-ui
+      - name: Stop containers
+        if: always()
+        run: docker-compose down

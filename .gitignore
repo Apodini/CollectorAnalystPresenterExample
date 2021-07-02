@@ -6,5 +6,8 @@
 # Xcode User settings
 xcuserdata/
 
+# Xcode build
+build/
+
 # Other files
 .DS_Store
