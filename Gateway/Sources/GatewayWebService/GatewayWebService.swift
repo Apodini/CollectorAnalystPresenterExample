@@ -10,11 +10,11 @@ import Foundation
 @main
 struct GatewayWebService: WebService {
     @Option var port: Int = 80
-    @Option var jaegerCollectorURL: URL = URL(string: "http://localhost:14250")!
-    @Option var jaegerQueryURL: URL = URL(string: "http://localhost:16685")!
-    @Option var prometheusURL: URL = URL(string: "http://localhost:9090")!
-    @Option var processingServiceURL: URL = URL(string: "http://localhost:82")!
-    @Option var databaseServiceURL: URL = URL(string: "http://localhost:81")!
+    @Option var jaegerCollectorURL = URL(string: "http://localhost:14250")! // swiftlint:disable:this force_unwrapping
+    @Option var jaegerQueryURL = URL(string: "http://localhost:16685")! // swiftlint:disable:this force_unwrapping
+    @Option var prometheusURL = URL(string: "http://localhost:9090")! // swiftlint:disable:this force_unwrapping
+    @Option var processingServiceURL = URL(string: "http://localhost:82")! // swiftlint:disable:this force_unwrapping
+    @Option var databaseServiceURL = URL(string: "http://localhost:81")! // swiftlint:disable:this force_unwrapping
     
     @PathParameter var userId: Int
     

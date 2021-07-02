@@ -1,9 +1,8 @@
 import Apodini
-import ApodiniREST
-import Apodini
 import ApodiniAnalystPresenter
 import ApodiniCollector
 import ApodiniDatabase
+import ApodiniREST
 import ArgumentParser
 import Foundation
 
@@ -11,8 +10,8 @@ import Foundation
 @main
 struct DatabaseWebService: WebService {
     @Option var port: Int = 81
-    @Option var jaegerCollectorURL: URL = URL(string: "http://localhost:14250")!
-    @Option var prometheusURL: URL = URL(string: "http://localhost:9091")!
+    @Option var jaegerCollectorURL = URL(string: "http://localhost:14250")! // swiftlint:disable:this force_unwrapping
+    @Option var prometheusURL = URL(string: "http://localhost:9091")! // swiftlint:disable:this force_unwrapping
     
     @PathParameter var userId: Int
     

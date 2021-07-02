@@ -28,7 +28,7 @@ let package = Package(
                 .product(name: "ApodiniDatabase", package: "Apodini"),
                 .product(name: "ApodiniREST", package: "Apodini"),
                 .product(name: "ApodiniCollector", package: "ApodiniCollector"),
-                .product(name: "ApodiniAnalystPresenter", package: "ApodiniAnalystPresenter"),
+                .product(name: "ApodiniAnalystPresenter", package: "ApodiniAnalystPresenter")
             ]
         ),
         .testTarget(

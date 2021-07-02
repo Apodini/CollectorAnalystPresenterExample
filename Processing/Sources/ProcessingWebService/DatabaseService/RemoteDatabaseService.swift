@@ -59,7 +59,7 @@ class RemoteDatabaseService: DatabaseService {
 }
 
 
-fileprivate struct DatabaseServiceStorageKey: StorageKey {
+private struct DatabaseServiceStorageKey: StorageKey {
     typealias Value = DatabaseService
 }
 
@@ -80,7 +80,7 @@ struct RemoteDatabaseServiceConfiguration: Configuration {
 extension Apodini.Application {
     var databaseService: DatabaseService {
         guard let databaseService = self.storage[DatabaseServiceStorageKey.self] else {
-            fatalError("You need to add a RemoteDatabaseServiceConfiguration to the WebService configuration to use the databaseService in the Environment")
+            fatalError("You need to add a RemoteDatabaseServiceConfiguration to use the databaseService in the Environment")
         }
         
         return databaseService

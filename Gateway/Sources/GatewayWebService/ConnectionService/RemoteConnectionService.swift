@@ -47,7 +47,12 @@ class RemoteConnectionService: ConnectionService {
         try makeNetworkCall(to: processingURL.appendingPathComponent("v1/user/\(userID)/hotspots"), requestContentType: Empty.self)
     }
     
-    private func makeNetworkCall<E: Encodable, D: Decodable>(to url: URL, method: HTTPMethod = .GET, requestContent: E? = nil, requestContentType: E.Type = E.self) throws -> EventLoopFuture<D> {
+    private func makeNetworkCall<E: Encodable, D: Decodable>(
+        to url: URL,
+        method: HTTPMethod = .GET,
+        requestContent: E? = nil,
+        requestContentType: E.Type = E.self
+    ) throws -> EventLoopFuture<D> {
         let body: HTTPClient.Body?
         if let requestContent = requestContent, method != .GET, let data = try? JSONEncoder().encode(requestContent) {
             body = .data(data)
@@ -85,19 +90,17 @@ class RemoteConnectionService: ConnectionService {
 }
 
 
-fileprivate struct ConnectionServiceStorageKey: StorageKey {
+private struct ConnectionServiceStorageKey: StorageKey {
     typealias Value = ConnectionService
 }
 
 
 extension Apodini.Application {
     var connectionService: ConnectionService {
-        get {
-            guard let connectionService = self.storage[ConnectionServiceStorageKey.self] else {
-                fatalError("You need to add a RemoveConnectionServiceConfiguration to the WebService configuration to use the connectionService in the Environment")
-            }
-            return connectionService
+        guard let connectionService = self.storage[ConnectionServiceStorageKey.self] else {
+            fatalError("You need to add a RemoveConnectionServiceConfiguration to use the connectionService in the Environment")
         }
+        return connectionService
     }
 }
 

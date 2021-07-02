@@ -24,4 +24,3 @@ struct CreateUserLocationHandler: Handler {
         }
     }
 }
-

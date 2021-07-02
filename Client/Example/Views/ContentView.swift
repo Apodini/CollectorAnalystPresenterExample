@@ -13,7 +13,7 @@ struct ContentView: SwiftUI.View {
         if let view = view {
             view.environmentObject(model)
         } else if let error = error {
-            ErrorView(error: error) {
+            ErrorView(error: error) { // swiftlint:disable:this multiline_arguments
                 self.view = nil
                 self.error = nil
                 self.url = nil

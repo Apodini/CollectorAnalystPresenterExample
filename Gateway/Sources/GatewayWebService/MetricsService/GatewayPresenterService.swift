@@ -23,7 +23,7 @@ final class GatewayPresenterService: PresenterService {
             return eventLoop.makeFailedFuture(ApodiniError(type: .serverError, reason: "Could not generate Presenter UI."))
         }
     }
-    public var encodedView: EventLoopFuture<Blob> {
+    var encodedView: EventLoopFuture<Blob> {
         view.flatMapThrowing {
             let data = try Presenter.encode(CoderView($0))
             return Blob(data, type: .application(.json))
@@ -31,7 +31,7 @@ final class GatewayPresenterService: PresenterService {
     }
     
     
-    public init(
+    init(
         client: HTTPClient,
         jaegerURL: URL,
         prometheusURL: URL,
@@ -147,7 +147,7 @@ final class GatewayPresenterService: PresenterService {
         for sequence: C,
         create: (C.Element) -> Cell
     ) -> some View {
-        return ScrollView {
+        ScrollView {
             VStack(alignment: .leading) {
                 sequence.map(create)
             }.padding(8)
@@ -155,7 +155,7 @@ final class GatewayPresenterService: PresenterService {
     }
 
     private func cell(title: String, subtitle: String) -> some View {
-        return VStack(alignment: .leading) {
+        VStack(alignment: .leading) {
             HStack {
                 Text(.static(title))
                     .font(.headline)
@@ -170,7 +170,7 @@ final class GatewayPresenterService: PresenterService {
     }
 
     private func lastTraces() throws -> ViewFuture {
-        return traceProvider.traces(for: TraceQuery(service: "gateway", maxCount: 10))
+        traceProvider.traces(for: TraceQuery(service: "gateway", maxCount: 10))
             .map { traces in
                 VStack {
                     traces.map { trace in
@@ -273,7 +273,7 @@ struct GatewayPresenterConfiguration: Configuration {
     let processingURL: URL
     let databaseURL: URL
     
-    public init(
+    init(
         jaegerURL: URL,
         prometheusURL: URL,
         processingURL: URL,
@@ -285,7 +285,7 @@ struct GatewayPresenterConfiguration: Configuration {
         self.databaseURL = databaseURL
     }
     
-    public func configure(_ app: Application) {
+    func configure(_ app: Application) {
         app.presenterService = GatewayPresenterService(
             client: app.httpClient,
             jaegerURL: jaegerURL,

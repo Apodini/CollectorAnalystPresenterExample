@@ -37,11 +37,10 @@ final class FluentDatabaseService: DatabaseService {
                 }
             }
     }
-
 }
 
 
-fileprivate struct DatabaseServiceStorageKey: StorageKey {
+private struct DatabaseServiceStorageKey: StorageKey {
     typealias Value = DatabaseService
 }
 

@@ -30,7 +30,7 @@ class DefaultProcessingService: ProcessingService {
 }
 
 
-fileprivate struct ProcessingServiceStorageKey: StorageKey {
+private struct ProcessingServiceStorageKey: StorageKey {
     typealias Value = ProcessingService
 }
 

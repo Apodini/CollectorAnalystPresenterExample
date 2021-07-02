@@ -9,9 +9,9 @@ import Foundation
 @main
 struct ProcessingWebService: WebService {
     @Option var port: Int = 82
-    @Option var jaegerCollectorURL: URL = URL(string: "http://localhost:14250")!
-    @Option var prometheusURL: URL = URL(string: "http://localhost:9092")!
-    @Option var databaseServiceURL: URL = URL(string: "http://localhost:81")!
+    @Option var jaegerCollectorURL = URL(string: "http://localhost:14250")! // swiftlint:disable:this force_unwrapping
+    @Option var prometheusURL = URL(string: "http://localhost:9092")! // swiftlint:disable:this force_unwrapping
+    @Option var databaseServiceURL = URL(string: "http://localhost:81")! // swiftlint:disable:this force_unwrapping
     
     @PathParameter var userId: Int
     
