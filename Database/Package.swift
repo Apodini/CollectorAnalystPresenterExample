@@ -17,8 +17,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Apodini/Apodini.git", .upToNextMinor(from: "0.2.0")),
-        .package(url: "https://github.com/Apodini/ApodiniCollector.git", .branch("develop")),
-        .package(url: "https://github.com/Apodini/ApodiniAnalystPresenter.git", .branch("develop"))
+        .package(url: "https://github.com/Apodini/ApodiniCollector.git", .upToNextMinor(from: "0.1.0")),
+        .package(url: "https://github.com/Apodini/ApodiniAnalystPresenter.git", .upToNextMinor(from: "0.1.0"))
     ],
     targets: [
         .executableTarget(
