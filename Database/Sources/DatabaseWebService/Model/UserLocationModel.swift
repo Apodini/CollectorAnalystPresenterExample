@@ -26,17 +26,17 @@ final class UserLocationModel: Model, Codable {
 extension UserLocationModel: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         database
-        .schema(UserLocationModel.schema)
-        .field(.id, .uuid, .identifier(auto: true))
-        .field("userID", .int)
-        .field("latitude", .double)
-        .field("longitude", .double)
-        .create()
+            .schema(UserLocationModel.schema)
+            .field(.id, .uuid, .identifier(auto: true))
+            .field("userID", .int)
+            .field("latitude", .double)
+            .field("longitude", .double)
+            .create()
     }
 
     func revert(on database: Database) -> EventLoopFuture<Void> {
         database
-        .schema(UserLocationModel.schema)
-        .delete()
+            .schema(UserLocationModel.schema)
+            .delete()
     }
 }

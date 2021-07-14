@@ -1,5 +1,11 @@
 # Collector, Analyst, and Presenter Example System
 
+[![DOI](https://zenodo.org/badge/379429348.svg)](https://zenodo.org/badge/latestdoi/379429348)
+[![codecov](https://codecov.io/gh/Apodini/CollectorAnalystPresenterExample/branch/develop/graph/badge.svg?token=Sw8OvhWtcY)](https://codecov.io/gh/Apodini/CollectorAnalystPresenterExample)
+[![jazzy](https://raw.githubusercontent.com/Apodini/CollectorAnalystPresenterExample/gh-pages/badge.svg)](https://apodini.github.io/CollectorAnalystPresenterExample/)
+[![Build and Test](https://github.com/Apodini/CollectorAnalystPresenterExample/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/Apodini/CollectorAnalystPresenterExample/actions/workflows/build-and-test.yml)
+[![Build Docker Compose](https://github.com/Apodini/CollectorAnalystPresenterExample/actions/workflows/docker-compose.yml/badge.svg)](https://github.com/Apodini/CollectorAnalystPresenterExample/actions/workflows/docker-compose.yml)
+
 This repository contains an example system consitig of three web services that highlights the usage of [Collector](https://github.com/Apodini/Collector), [Analyst](https://github.com/Apodini/Analyst), and [Presenter](https://github.com/Apodini/Presenter) in combination with the [Apodini](https://github.com/Apodini/Apodini) framework using [ApodiniCollector](https://github.com/Apodini/ApodiniCollector) and [ApodiniAnalystPresenter](https://github.com/Apodini/ApodiniAnalystPresenter).
 It features a database web service, a processing web service, and a gateway that offers the public API of the web service. All web services collect metrics and traces using the [Collector](https://github.com/Apodini/Collector) framework.
 A client application allows developers to observe inisights generated using [Analyst](https://github.com/Apodini/Analyst) and pesented using [Presenter](https://github.com/Apodini/Presenter):
@@ -51,7 +57,7 @@ To easily continue developing the example system, you can open the *Example.xcwo
 To test the collection of metrics and traces, you can run the `$ docker compose -f docker-compose-development.yml up` command in the root of the repo start-up adjacently deployed [Jaeger](https://www.jaegertracing.io) and [Prometheus](https://prometheus.io) instances used by the web services. All web services are configured to connect to the instances started using the `$ docker compose -f docker-compose-development.yml up` command.
 
 ## Contributing
-Contributions to this project are welcome. Please make sure to read the [contribution guidelines](https://github.com/Apodini/.github/blob/release/CONTRIBUTING.md) first.
+Contributions to this project are welcome. Please make sure to read the [contribution guidelines](https://github.com/Apodini/.github/blob/main/CONTRIBUTING.md) and the [contributor covenant code of conduct](https://github.com/Apodini/.github/blob/main/CODE_OF_CONDUCT.md) first.
 
 ## License
-This project is licensed under the MIT License. See [License](https://github.com/Apodini/CollectorAnalystPresenterExample/blob/release/LICENSE) for more information.
+This project is licensed under the MIT License. See [License](https://github.com/Apodini/CollectorAnalystPresenterExample/blob/develop/LICENSE) for more information.
