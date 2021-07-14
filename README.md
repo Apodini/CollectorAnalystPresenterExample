@@ -2,7 +2,6 @@
 
 [![DOI](https://zenodo.org/badge/379429348.svg)](https://zenodo.org/badge/latestdoi/379429348)
 [![codecov](https://codecov.io/gh/Apodini/CollectorAnalystPresenterExample/branch/develop/graph/badge.svg?token=Sw8OvhWtcY)](https://codecov.io/gh/Apodini/CollectorAnalystPresenterExample)
-[![jazzy](https://raw.githubusercontent.com/Apodini/CollectorAnalystPresenterExample/gh-pages/badge.svg)](https://apodini.github.io/CollectorAnalystPresenterExample/)
 [![Build and Test](https://github.com/Apodini/CollectorAnalystPresenterExample/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/Apodini/CollectorAnalystPresenterExample/actions/workflows/build-and-test.yml)
 [![Build Docker Compose](https://github.com/Apodini/CollectorAnalystPresenterExample/actions/workflows/docker-compose.yml/badge.svg)](https://github.com/Apodini/CollectorAnalystPresenterExample/actions/workflows/docker-compose.yml)
 
