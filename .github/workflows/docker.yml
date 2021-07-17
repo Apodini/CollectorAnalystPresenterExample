@@ -42,8 +42,7 @@ jobs:
         id: buildandpush
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: ./${{ matrix.webservice }}/Dockerfile
+          context: ./${{ matrix.webservice }}
           push: true
           tags: ghcr.io/apodini/collectoranalystpresenterexample/${{ steps.webservice.outputs.lowercase }}:latest,ghcr.io/apodini/collectoranalystpresenterexample/${{ steps.webservice.outputs.lowercase }}:${{ steps.latesttag.outputs.tag }}
       - name: Image digest
