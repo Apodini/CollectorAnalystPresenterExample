@@ -5,9 +5,7 @@ services:
     container_name: "jaeger"
   gateway:
     container_name: "gateway"
-    build:
-      context: ./Gateway
-      dockerfile: ./Dockerfile
+    image: "ghcr.io/apodini/collectoranalystpresenterexample/gateway:latest"
     ports:
       - "80:80"
     command: ["--port", "80", "--jaeger-collector-url", "http://jaeger:14250", "--jaeger-query-url", "http://jaeger:16685", "--prometheus-url", "http://gatewayprometheus:9090", "--processing-service-url", "http://processing", "--database-service-url", "http://database"]
@@ -25,9 +23,7 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
   database:
     container_name: "database"
-    build:
-      context: ./Database
-      dockerfile: ./Dockerfile
+    image: "ghcr.io/apodini/collectoranalystpresenterexample/database:latest"
     command: ["--port", "80", "--jaeger-collector-url", "http://jaeger:14250", "--prometheus-url", "http://databaseprometheus:9090"]
     depends_on:
       - jaeger
@@ -41,9 +37,7 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
   processing:
     container_name: "processing"
-    build:
-      context: ./Processing
-      dockerfile: ./Dockerfile
+    image: "ghcr.io/apodini/collectoranalystpresenterexample/processing:latest"
     command: ["--port", "80", "--jaeger-collector-url", "http://jaeger:14250", "--prometheus-url", "http://processingprometheus:9090", "--database-service-url", "http://database"]
     depends_on:
       - database
