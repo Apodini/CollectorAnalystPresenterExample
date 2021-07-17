@@ -55,6 +55,8 @@ To easily continue developing the example system, you can open the *Example.xcwo
 
 To test the collection of metrics and traces, you can run the `$ docker compose -f docker-compose-development.yml up` command in the root of the repo start-up adjacently deployed [Jaeger](https://www.jaegertracing.io) and [Prometheus](https://prometheus.io) instances used by the web services. All web services are configured to connect to the instances started using the `$ docker compose -f docker-compose-development.yml up` command.
 
+To test the setup defined in `docker-compose.yml` setup you can run the `$ docker compose -f docker-compose-locally.yml up` to build all files locally using the source code in this repository while using the same setup as defined in `docker-compose.yml`.
+
 ## Contributing
 Contributions to this project are welcome. Please make sure to read the [contribution guidelines](https://github.com/Apodini/.github/blob/main/CONTRIBUTING.md) and the [contributor covenant code of conduct](https://github.com/Apodini/.github/blob/main/CODE_OF_CONDUCT.md) first.
 
