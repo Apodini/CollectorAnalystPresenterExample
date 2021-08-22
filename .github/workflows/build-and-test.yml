@@ -1,3 +1,11 @@
+#                   
+# This source file is part of the Collector-Analyst-Presenter Example open source project
+# 
+# SPDX-FileCopyrightText: 2021 Paul Schmiedmayer and the project authors (see CONTRIBUTORS.md) <paul.schmiedmayer@tum.de>
+# 
+# SPDX-License-Identifier: MIT
+# 
+
 name: Build and Test
 
 on:
@@ -7,6 +15,7 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch:
 
 jobs:
   macosclient:
@@ -27,11 +36,13 @@ jobs:
     - name: Build and test
       run: xcodebuild test -scheme Example -destination 'platform=iOS Simulator,OS=15.0,name=iPhone 12'
   macoswebservices:
-    name: macOS ${{ matrix.webservice }}
+    name: macOS ${{ matrix.webservice }} ${{ matrix.configuration }}
     runs-on: macos-11
     strategy:
+      fail-fast: false
       matrix:
         webservice: [Gateway, Database, Processing]
+        configuration: [debug, release]
     defaults:
       run:
         working-directory: ./${{ matrix.webservice }}
@@ -44,17 +55,23 @@ jobs:
       run: xcodebuild -version
     - name: Check Swift version
       run: swift --version
-    - name: Build and test
-      run: swift test
+    - name: Release Build
+      if: matrix.configuration == 'release'
+      run: swift build -c release
+    - name: Debug Build
+      if: matrix.configuration == 'debug'
+      run: swift build -c debug
   linuxwebservices:
-    name: Linux ${{ matrix.webservice }} ${{ matrix.linux }}
+    name: Linux ${{ matrix.webservice }} ${{ matrix.linux }} ${{ matrix.configuration }}
     runs-on: ubuntu-latest
     container:
-      image: swift:${{ matrix.linux }}
+      image: swiftlang/swift:nightly-5.5-${{ matrix.linux }}
     strategy:
+      fail-fast: false
       matrix:
         webservice: [Gateway, Database, Processing]
-        linux: [latest, focal, amazonlinux2, centos8]
+        linux: [bionic, focal, amazonlinux2, centos8]
+        configuration: [debug, release, release_testing]
     defaults:
       run:
         working-directory: ./${{ matrix.webservice }}
@@ -71,5 +88,12 @@ jobs:
       run: yum update -y --nobest && yum install -y sqlite-devel
     - name: Check Swift version
       run: swift --version
-    - name: Build and test
-      run: swift test
+    - name: Release Build
+      if: matrix.configuration == 'release'
+      run: swift build -c release
+    - name: Release Build & Test
+      if: matrix.configuration == 'release_testing'
+      run: swift test -c release -Xswiftc -enable-testing
+    - name: Debug Build & Test
+      if: matrix.configuration == 'debug'
+      run: swift test -c debug

@@ -1,3 +1,13 @@
+<!--
+
+This source file is part of the Collector-Analyst-Presenter Example open source project
+
+SPDX-FileCopyrightText: 2021 Paul Schmiedmayer and the project authors (see CONTRIBUTORS.md) <paul.schmiedmayer@tum.de>
+
+SPDX-License-Identifier: MIT
+
+-->
+
 # Collector, Analyst, and Presenter Example System
 
 [![DOI](https://zenodo.org/badge/379429348.svg)](https://zenodo.org/badge/latestdoi/379429348)

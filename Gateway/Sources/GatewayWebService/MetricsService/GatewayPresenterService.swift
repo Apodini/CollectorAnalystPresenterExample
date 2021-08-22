@@ -1,3 +1,11 @@
+//
+// This source file is part of the Collector-Analyst-Presenter Example open source project
+//
+// SPDX-FileCopyrightText: 2021 Paul Schmiedmayer and the project authors (see CONTRIBUTORS.md) <paul.schmiedmayer@tum.de>
+//
+// SPDX-License-Identifier: MIT
+//
+
 import Apodini
 import AsyncHTTPClient
 import ApodiniAnalystPresenter
@@ -16,16 +24,18 @@ final class GatewayPresenterService: PresenterService {
     var eventLoop: EventLoop {
         client.eventLoopGroup.next()
     }
-    var view: ViewFuture {
-        do {
-            return try listView()
-        } catch {
-            return eventLoop.makeFailedFuture(ApodiniError(type: .serverError, reason: "Could not generate Presenter UI."))
+    var view: _CodableView {
+        get async throws {
+            do {
+                return try await listView()
+            } catch {
+                return Text("Could not generate Presenter UI: \(error)")
+            }
         }
     }
-    var encodedView: EventLoopFuture<Blob> {
-        view.flatMapThrowing {
-            let data = try Presenter.encode(CoderView($0))
+    var encodedView: Blob {
+        get async throws {
+            let data = try Presenter.encode(CoderView(try await view))
             return Blob(data, type: .application(.json))
         }
     }
@@ -61,12 +71,12 @@ final class GatewayPresenterService: PresenterService {
 
     // MARK: Nested Types
 
-    private func listView() throws -> ViewFuture {
-        EventLoopFuture<(_CodableView, _CodableView, _CodableView)>
-            .combine(try gateway(), try database(), try processing())
-            .map {
-                self.listView(gateway: $0, database: $1, processing: $2)
-            }
+    private func listView() async throws -> _CodableView {
+        async let gateway = gateway()
+        async let database = database()
+        async let processing = processing()
+        
+        return try await self.listView(gateway: gateway, database: database, processing: processing)
     }
 
     private func listView(gateway: _CodableView, database: _CodableView, processing: _CodableView) -> some View {
@@ -97,36 +107,34 @@ final class GatewayPresenterService: PresenterService {
         }
     }
 
-    private func database() throws -> ViewFuture {
-        client
-            .execute(request: try HTTPClient.Request(url: databaseURL.appendingPathComponent("/v1/metrics-ui")))
-            .map { response in
-                guard let body = response.body else {
-                    return Text(.static("Database UI could not be loaded"))
-                }
-                return DataView(.init(buffer: body))
+    private func database() async -> _CodableView {
+        do {
+            let response = try await client.execute(request: try HTTPClient.Request(url: databaseURL.appendingPathComponent("/v1/metrics-ui"))).get()
+            
+            guard let body = response.body else {
+                return Text(.static("Database UI could not be loaded"))
             }
-            .flatMapError { _ in
-                self.eventLoop.future(Text(.static("Error")))
-            }
+            return DataView(.init(buffer: body))
+        } catch {
+            return Text(.static("Error"))
+        }
     }
 
-    private func processing() throws -> ViewFuture {
-        client
-            .execute(request: try HTTPClient.Request(url: processingURL.appendingPathComponent("/v1/metrics-ui")))
-            .map { response in
-                guard let body = response.body else {
-                    return Text(.static("Processing UI could not be loaded"))
-                }
-                return DataView(.init(buffer: body))
+    private func processing() async -> _CodableView {
+        do {
+            let response = try await client.execute(request: try HTTPClient.Request(url: processingURL.appendingPathComponent("/v1/metrics-ui"))).get()
+            
+            guard let body = response.body else {
+                return Text(.static("Processing UI could not be loaded"))
             }
-            .flatMapError { _ in
-                self.eventLoop.future(Text(.static("Error")))
-            }
+            return DataView(.init(buffer: body))
+        } catch {
+            return Text(.static("Error"))
+        }
     }
 
-    private func gateway() throws -> ViewFuture {
-        service(title: "Gateway", cards: [
+    private func gateway() async throws -> _CodableView {
+        try await service(title: "Gateway", cards: [
             metricsCounterGraph(label: "location_usage", title: "Location Usage"),
             metricsCounterGraph(label: "hotspots_usage", title: "Hotspots Usage"),
             periodicTaskDuration(),
@@ -135,11 +143,11 @@ final class GatewayPresenterService: PresenterService {
         ])
     }
 
-    private func periodicTaskDuration() -> ViewFuture {
+    private func periodicTaskDuration() async throws -> _CodableView {
         let timer = Timer(label: "gateway_periodic_task_duration")
         let range = TimeRange.range(.days(3), step: .hours(1))
         let query = timer.query(scalar: .delta(timer[range.step]))
-        return graph(for: query.in(range), title: "Periodic Task Duration")
+        return try await graph(for: query.in(range), title: "Periodic Task Duration")
     }
 
     private func list<C: Sequence, Cell: View>(
@@ -169,28 +177,24 @@ final class GatewayPresenterService: PresenterService {
             .padding(8)
     }
 
-    private func lastTraces() throws -> ViewFuture {
-        traceProvider.traces(for: TraceQuery(service: "gateway", maxCount: 10))
-            .map { traces in
-                VStack {
-                    traces.map { trace in
-                        self.traceView(for: trace)
-                    }
-                }
+    private func lastTraces() async throws -> _CodableView {
+        let traces = try await traceProvider.traces(for: TraceQuery(service: "gateway", maxCount: 10)).get()
+        return VStack {
+            traces.map { trace in
+                self.traceView(for: trace)
             }
+        }
     }
 
-    private func dependencies() throws -> ViewFuture {
+    private func dependencies() async throws -> _CodableView {
         let startDate = Date().addingTimeInterval(-24 * 60 * 60)
-        return traceProvider
-            .dependencies(from: startDate)
-            .map { dependencies in
-                VStack {
-                    dependencies.map { dependency in
-                        Text(.static(dependency.parent + " -\(dependency.callCount)-> " + dependency.child))
-                    }
-                }
+        let dependencies = try await traceProvider.dependencies(from: startDate).get()
+        
+        return VStack {
+            dependencies.map { dependency in
+                Text(.static(dependency.parent + " -\(dependency.callCount)-> " + dependency.child))
             }
+        }
     }
 
     private func traceView(for trace: Trace) -> some View {
@@ -224,18 +228,15 @@ final class GatewayPresenterService: PresenterService {
         }
     }
 
-    private func service(title: String, cards: [ViewFuture]) -> ViewFuture {
-        EventLoopFuture.whenAllSucceed(cards, on: eventLoop)
-        .map { cards in
-            ScrollView {
-                VStack {
-                    cards
-                }.padding(8)
-            }.navigationBarTitle(.static(title))
-        }
+    private func service(title: String, cards: [_CodableView]) -> _CodableView {
+        ScrollView {
+            VStack {
+                cards
+            }.padding(8)
+        }.navigationBarTitle(.static(title))
     }
 
-    private func metricsCounterGraph(label: String, title: String? = nil) -> ViewFuture {
+    private func metricsCounterGraph(label: String, title: String? = nil) async throws -> _CodableView {
         let counter = Counter(
             label: label,
             dimensions: ["job": "gateway"]
@@ -243,21 +244,17 @@ final class GatewayPresenterService: PresenterService {
 
         let range = TimeRange.range(.days(3), step: .hours(1))
         let query = counter.query(scalar: .delta(counter[range.step]))
-        return graph(for: query.in(range), title: title ?? label)
+        return try await graph(for: query.in(range), title: title ?? label)
     }
 
-    private func graph(for query: RangeQuery<Analyst.Counter>, title: String? = nil) -> ViewFuture {
-        metricsProvider.results(for: query)
-            .map {
-                self.view(for: $0, title: title ?? query.label)
-            }
+    private func graph(for query: RangeQuery<Analyst.Counter>, title: String? = nil) async throws -> _CodableView {
+        let results = try await metricsProvider.results(for: query).get()
+        return self.view(for: results, title: title ?? query.label)
     }
 
-    private func graph(for query: RangeQuery<Analyst.Timer>, title: String? = nil) -> ViewFuture {
-        metricsProvider.results(for: query)
-            .map {
-                self.view(for: $0, title: title ?? query.label)
-            }
+    private func graph(for query: RangeQuery<Analyst.Timer>, title: String? = nil) async throws -> _CodableView {
+        let results = try await metricsProvider.results(for: query).get()
+        return self.view(for: results, title: title ?? query.label)
     }
 
     private func view(for results: [RangeResult], title: String) -> some View {
