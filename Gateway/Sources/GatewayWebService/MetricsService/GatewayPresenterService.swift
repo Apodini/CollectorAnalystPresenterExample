@@ -25,7 +25,7 @@ final class GatewayPresenterService: PresenterService {
         client.eventLoopGroup.next()
     }
     var view: _CodableView {
-        get async throws {
+        get async throws { // swiftlint:disable:this implicit_getter
             do {
                 return try await listView()
             } catch {
@@ -34,7 +34,7 @@ final class GatewayPresenterService: PresenterService {
         }
     }
     var encodedView: Blob {
-        get async throws {
+        get async throws { // swiftlint:disable:this implicit_getter
             let data = try Presenter.encode(CoderView(try await view))
             return Blob(data, type: .application(.json))
         }
@@ -122,7 +122,8 @@ final class GatewayPresenterService: PresenterService {
 
     private func processing() async -> _CodableView {
         do {
-            let response = try await client.execute(request: try HTTPClient.Request(url: processingURL.appendingPathComponent("/v1/metrics-ui"))).get()
+            let response = try await client.execute(request: try HTTPClient.Request(url: processingURL.appendingPathComponent("/v1/metrics-ui")))
+                .get()
             
             guard let body = response.body else {
                 return Text(.static("Processing UI could not be loaded"))

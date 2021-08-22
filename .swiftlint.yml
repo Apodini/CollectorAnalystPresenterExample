@@ -325,6 +325,12 @@ only_rules:
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - .build
   - .swiftpm
+  - Database/.build
+  - Database/.swiftpm
+  - Gateway/.build
+  - Gateway/.swiftpm
+  - Processing/.build
+  - Processing/.swiftpm
 
 closure_body_length: # Closure bodies should not span too many lines.
   - 35 # warning - default: 20
