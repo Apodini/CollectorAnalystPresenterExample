@@ -10,8 +10,8 @@
 
 # Swift Package Manager
 *.xcodeproj
-.swiftpm
-.build/
+**/.swiftpm
+**/.build/
 
 # IDE related folders
 .idea
