@@ -24,8 +24,8 @@ final class GatewayPresenterService: PresenterService {
     var eventLoop: EventLoop {
         client.eventLoopGroup.next()
     }
-    var view: _CodableView {
-        get async throws { // swiftlint:disable:this implicit_getter
+    var view: _CodableView { // swiftlint:disable all
+        get async throws { // We disable all SwiftLint lint rules for this section as SwiftLint wrogfully triggers a few rules here.
             do {
                 return try await listView()
             } catch {
@@ -38,7 +38,7 @@ final class GatewayPresenterService: PresenterService {
             let data = try Presenter.encode(CoderView(try await view))
             return Blob(data, type: .application(.json))
         }
-    }
+    } // swiftlint:enable all
     
     
     init(
