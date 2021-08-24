@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/Apodini/Apodini.git",
         "state": {
           "branch": null,
-          "revision": "452719f6cb428977f2c7d5a2eebdc41505b9267a",
-          "version": "0.4.1"
+          "revision": "e6a943b0db29b2df5c0c139ab993e57752bf22b7",
+          "version": "0.5.0"
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/Apodini/ApodiniAnalystPresenter.git",
         "state": {
           "branch": null,
-          "revision": "09e0cfb993d7f3ba320cebc388c1bdf555fe027d",
-          "version": "0.3.0"
+          "revision": "d813931e0fc52205669c0a30fe6aad09bdd8ec19",
+          "version": "0.3.1"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/Apodini/ApodiniAsyncHTTPClient.git",
         "state": {
           "branch": null,
-          "revision": "6a3e13802dfeab0697f20c242eddf63e35cd09f2",
-          "version": "0.3.0"
+          "revision": "cb387bdf21b8d3ded1e76bd27b3b88d59202d4c1",
+          "version": "0.3.1"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/Apodini/ApodiniCollector.git",
         "state": {
           "branch": null,
-          "revision": "9fb82354b4cd7d76e96238ea154e2e18e8294bd2",
-          "version": "0.3.0"
+          "revision": "fbea06605aa31e4487123ff4ca1ebfbc157d243a",
+          "version": "0.3.1"
         }
       },
       {

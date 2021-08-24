@@ -40,8 +40,7 @@ final class FluentDatabaseService: DatabaseService {
             .all()
             .map {
                 $0.map {
-                    Coordinate(latitude: $0.latitude,
-                               longitude: $0.longitude)
+                    Coordinate(latitude: $0.latitude, longitude: $0.longitude)
                 }
             }
     }

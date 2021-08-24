@@ -12,10 +12,7 @@ import Foundation
 
 final class UserLocationModel: Model, Codable {
     static let schema = String(describing: UserLocationModel.self)
-
     
-    init() {}
-
     
     @ID
     var id: UUID?
@@ -28,6 +25,9 @@ final class UserLocationModel: Model, Codable {
 
     @Field(key: "longitude")
     var longitude: Double
+    
+    
+    init() {}
 }
 
 

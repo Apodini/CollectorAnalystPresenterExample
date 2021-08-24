@@ -7,10 +7,10 @@
 //
 
 import Apodini
-import AsyncHTTPClient
 import ApodiniAnalystPresenter
-import PrometheusAnalyst
+import AsyncHTTPClient
 import JaegerAnalyst
+import PrometheusAnalyst
 
 
 final class GatewayPresenterService: PresenterService {

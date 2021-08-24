@@ -23,11 +23,11 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/Apodini/Apodini.git", .upToNextMinor(from: "0.4.1")),
-        .package(url: "https://github.com/Apodini/ApodiniAsyncHTTPClient.git", .upToNextMinor(from: "0.3.0")),
+        .package(url: "https://github.com/Apodini/Apodini.git", .upToNextMinor(from: "0.5.0")),
+        .package(url: "https://github.com/Apodini/ApodiniAsyncHTTPClient.git", .upToNextMinor(from: "0.3.1")),
         .package(url: "https://github.com/NSHipster/DBSCAN", .upToNextMinor(from: "0.0.1")),
-        .package(url: "https://github.com/Apodini/ApodiniCollector.git", .upToNextMinor(from: "0.3.0")),
-        .package(url: "https://github.com/Apodini/ApodiniAnalystPresenter.git", .upToNextMinor(from: "0.3.0"))
+        .package(url: "https://github.com/Apodini/ApodiniCollector.git", .upToNextMinor(from: "0.3.1")),
+        .package(url: "https://github.com/Apodini/ApodiniAnalystPresenter.git", .upToNextMinor(from: "0.3.1"))
     ],
     targets: [
         .executableTarget(

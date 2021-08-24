@@ -7,8 +7,8 @@
 //
 
 import Apodini
-import Collector
 import AsyncHTTPClient
+import Collector
 import NIOHTTP1
 
 

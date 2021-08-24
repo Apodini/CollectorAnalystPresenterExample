@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Foundation
 import Apodini
+import Foundation
 
 
 struct Coordinate: Codable, Equatable, Content {

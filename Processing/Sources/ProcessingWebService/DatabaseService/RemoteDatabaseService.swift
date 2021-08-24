@@ -7,8 +7,8 @@
 //
 
 import Apodini
-import ApodiniCollector
 import ApodiniAsyncHTTPClient
+import ApodiniCollector
 import Foundation
 
 protocol DatabaseService {

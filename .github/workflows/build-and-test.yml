@@ -21,9 +21,6 @@ jobs:
   macosclient:
     name: macOS Client
     runs-on: macos-11
-    defaults:
-      run:
-        working-directory: ./Client
     steps:
     - uses: actions/checkout@v2
     - uses: maxim-lobanov/setup-xcode@v1.1
@@ -48,9 +45,13 @@ jobs:
         working-directory: ./${{ matrix.webservice }}
     steps:
     - uses: actions/checkout@v2
-    - uses: maxim-lobanov/setup-xcode@v1.1
+    - uses: maxim-lobanov/setup-xcode@v1.2.3
       with:
         xcode-version: latest
+    - uses: actions/cache@v2
+      with:
+        path: .build
+        key: ${{ runner.os }}-${{ matrix.webservice }}-spm-${{ hashFiles('**/Package.resolved') }}
     - name: Check Xcode version
       run: xcodebuild -version
     - name: Check Swift version
@@ -86,6 +87,10 @@ jobs:
     - name: Install libsqlite3
       if: startsWith( matrix.linux, 'centos' )
       run: yum update -y --nobest && yum install -y sqlite-devel
+    - uses: actions/cache@v2
+      with:
+        path: .build
+        key: ${{ runner.os }}-${{matrix.linux}}-${{ matrix.webservice }}-spm-${{ hashFiles('Package.resolved') }}
     - name: Check Swift version
       run: swift --version
     - name: Release Build
