@@ -1,14 +1,25 @@
+#                   
+# This source file is part of the Collector-Analyst-Presenter Example open source project
+# 
+# SPDX-FileCopyrightText: 2021 Paul Schmiedmayer and the project authors (see CONTRIBUTORS.md) <paul.schmiedmayer@tum.de>
+# 
+# SPDX-License-Identifier: MIT
+# 
+
 # Apodini .gitignore File
 
 # Swift Package Manager
-.build/
-Package.resolved
+*.xcodeproj
+!Client/Example.xcodeproj
+**/.swiftpm
+**/.build/
+
+# IDE related folders
+.idea
 
 # Xcode User settings
 xcuserdata/
 
-# Xcode build
-build/
-
 # Other files
 .DS_Store
+.env

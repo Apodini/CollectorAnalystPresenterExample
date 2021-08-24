@@ -1,3 +1,11 @@
+//
+// This source file is part of the Collector-Analyst-Presenter Example open source project
+//
+// SPDX-FileCopyrightText: 2021 Paul Schmiedmayer and the project authors (see CONTRIBUTORS.md) <paul.schmiedmayer@tum.de>
+//
+// SPDX-License-Identifier: MIT
+//
+
 import SwiftUI
 
 
@@ -30,10 +38,9 @@ struct ConnectView: View {
                     .padding(.bottom, 16)
                 Button("Connect", action: load)
                     .disabled(url == nil)
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.borderedProminent)
                     .tint(.primary)
                     .controlSize(.large)
-                    .controlProminence(.increased)
             }
                 .padding(32)
                 .frame(maxWidth: .infinity)

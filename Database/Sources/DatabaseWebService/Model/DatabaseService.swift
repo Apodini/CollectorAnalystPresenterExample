@@ -1,3 +1,11 @@
+//
+// This source file is part of the Collector-Analyst-Presenter Example open source project
+//
+// SPDX-FileCopyrightText: 2021 Paul Schmiedmayer and the project authors (see CONTRIBUTORS.md) <paul.schmiedmayer@tum.de>
+//
+// SPDX-License-Identifier: MIT
+//
+
 import Apodini
 import FluentSQLiteDriver
 
@@ -32,8 +40,7 @@ final class FluentDatabaseService: DatabaseService {
             .all()
             .map {
                 $0.map {
-                    Coordinate(latitude: $0.latitude,
-                               longitude: $0.longitude)
+                    Coordinate(latitude: $0.latitude, longitude: $0.longitude)
                 }
             }
     }

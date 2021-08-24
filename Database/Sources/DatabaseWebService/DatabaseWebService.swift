@@ -1,9 +1,18 @@
+//
+// This source file is part of the Collector-Analyst-Presenter Example open source project
+//
+// SPDX-FileCopyrightText: 2021 Paul Schmiedmayer and the project authors (see CONTRIBUTORS.md) <paul.schmiedmayer@tum.de>
+//
+// SPDX-License-Identifier: MIT
+//
+
 import Apodini
 import ApodiniAnalystPresenter
 import ApodiniCollector
 import ApodiniDatabase
 import ApodiniREST
 import ArgumentParser
+import FluentSQLiteDriver
 import Foundation
 
 
@@ -24,7 +33,7 @@ struct DatabaseWebService: WebService {
         REST()
         
         // Databasee Configuration
-        DatabaseConfiguration(.sqlite(.memory))
+        DatabaseConfiguration(.sqlite(.memory), as: .sqlite)
             .addMigrations(UserLocationModel())
         
         // Configure the UI Metrics Service with the passed in arguments

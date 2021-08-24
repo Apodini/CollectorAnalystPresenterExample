@@ -5,9 +5,6 @@
       location = "group:README.md">
    </FileRef>
    <FileRef
-      location = "group:LICENSE">
-   </FileRef>
-   <FileRef
       location = "group:docker-compose-development.yml">
    </FileRef>
    <FileRef
