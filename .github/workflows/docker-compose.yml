@@ -35,7 +35,6 @@ jobs:
                http://localhost/v1/user/1/locations
           curl --fail http://localhost/v1/user/1/hotspots
           curl --fail http://localhost/v1/metrics
-          curl --fail http://localhost/v1/metrics-ui
       - name: Stop containers
         if: always()
         run: docker-compose down
