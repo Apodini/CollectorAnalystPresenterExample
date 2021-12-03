@@ -29,7 +29,7 @@ struct GatewayWebService: WebService {
     
     var configuration: Apodini.Configuration {
         // Configure the HTTP port based on the passed in arguments
-        HTTPConfiguration(port: port)
+        HTTPConfiguration(bindAddress: .interface(port: port))
         
         // We eexpose a RESTful API
         REST()

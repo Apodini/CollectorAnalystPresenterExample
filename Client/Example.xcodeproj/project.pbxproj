@@ -495,7 +495,7 @@
 			repositoryURL = "https://github.com/Apodini/Analyst";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.1.1;
+				minimumVersion = 0.1.2;
 			};
 		};
 		657977FF268DD4490099F653 /* XCRemoteSwiftPackageReference "Presenter" */ = {
