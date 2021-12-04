@@ -66,12 +66,12 @@ jobs:
   #   name: Linux ${{ matrix.webservice }} ${{ matrix.linux }} ${{ matrix.configuration }}
   #   runs-on: ubuntu-latest
   #   container:
-  #     image: swiftlang/swift:nightly-5.5-${{ matrix.linux }}
+  #     image: swift:5.5-${{ matrix.linux }}
   #   strategy:
   #     fail-fast: false
   #     matrix:
   #       webservice: [Gateway, Database, Processing]
-  #       linux: [bionic, focal, amazonlinux2, centos8]
+  #       linux: [focal]
   #       configuration: [debug, release, release_testing]
   #   defaults:
   #     run:
